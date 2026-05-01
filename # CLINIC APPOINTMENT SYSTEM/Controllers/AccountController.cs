@@ -54,12 +54,14 @@ public class AccountController : Controller
                 return View(model);
             }
 
-            // Check if email is confirmed (if required)
+            // Email confirmation check removed for seamless UX
+            /*
             if (await _userManager.IsEmailConfirmedAsync(user) == false)
             {
                 ModelState.AddModelError(string.Empty, "You must confirm your email before logging in.");
                 return View(model);
             }
+            */
 
             if (!user.IsApproved)
             {
@@ -145,10 +147,12 @@ public class AccountController : Controller
                 UserName = model.Email, 
                 Email = model.Email, 
                 FullName = model.Name,
-                IsApproved = isApproved,
+                IsApproved = true,     // Auto-approve for instant access
+                EmailConfirmed = true, // Auto-confirm email
                 RoleRequested = model.RoleRequested,
                 PhoneNumber = model.Contact,
                 RecoveryEmail = model.RecoveryEmail,
+                Bio = model.Bio
             };
             
             var result = await _userManager.CreateAsync(user, model.Password);
@@ -229,30 +233,11 @@ public class AccountController : Controller
                 }
                 
                 await _context.SaveChangesAsync();
-
-                if (!isApproved)
-                {
-                    TempData["SuccessMessage"] = "Registration successful! Your account is pending admin approval. Please check your email to verify your account.";
-                    return RedirectToAction("Login");
-                }
-
-                var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                var callbackUrl = Url.Action(
-                    "ConfirmEmail",
-                    "Account",
-                    new { userId = user.Id, code = code },
-                    protocol: Request.Scheme);
-
-                if (callbackUrl != null)
-                {
-                    await _emailSender.SendEmailAsync(model.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
-                }
-
-                TempData["SuccessMessage"] = "Registration successful! Please check your email to verify your account before logging in.";
+                
+                TempData["SuccessMessage"] = "Registration successful! You can now log in immediately.";
                 return RedirectToAction("Login");
             }
-
+            
             foreach (var error in result.Errors)
             {
                 ModelState.AddModelError(string.Empty, error.Description);
