@@ -62,7 +62,7 @@ namespace ClinicAppointmentSystem.Controllers
 
         // POST: Patients/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        
         [Authorize(Roles = "Staff")]
         public async Task<IActionResult> Create(Patient patient)
         {
@@ -95,7 +95,7 @@ namespace ClinicAppointmentSystem.Controllers
 
         // POST: Patients/Edit/5
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        
         [Authorize(Roles = "Admin,Staff,Doctor")]
         public async Task<IActionResult> Edit(int id, Patient patient)
         {
@@ -133,7 +133,7 @@ namespace ClinicAppointmentSystem.Controllers
 
         // POST: Patients/Delete/5
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
+        
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {

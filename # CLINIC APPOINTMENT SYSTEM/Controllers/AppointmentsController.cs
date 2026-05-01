@@ -54,7 +54,7 @@ namespace ClinicAppointmentSystem.Controllers
 
         // POST: Appointments/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        
         public async Task<IActionResult> Create([Bind("Id,PatientId,DoctorId,Date,Time,Status")] Appointment appointment)
         {
             if (ModelState.IsValid)
@@ -101,7 +101,7 @@ namespace ClinicAppointmentSystem.Controllers
 
         // POST: Appointments/Edit/5
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        
         public async Task<IActionResult> Edit(int id, [Bind("Id,PatientId,DoctorId,Date,Time,Status,RowVersion")] Appointment appointment)
         {
             if (id != appointment.Id) return NotFound();
@@ -163,7 +163,7 @@ namespace ClinicAppointmentSystem.Controllers
 
         // POST: Appointments/Delete/5
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
+        
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var appointment = await _context.Appointments.FindAsync(id);

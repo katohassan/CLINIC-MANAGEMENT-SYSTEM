@@ -83,7 +83,7 @@ namespace ClinicAppointmentSystem.Controllers
 
         // POST: RoleManagement/Manage/5
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        
         public async Task<IActionResult> Manage(List<ManageUserRolesViewModel> model, string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
@@ -113,7 +113,7 @@ namespace ClinicAppointmentSystem.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        
         public async Task<IActionResult> ToggleApproval(string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);

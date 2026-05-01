@@ -39,7 +39,7 @@ public class AccountController : Controller
     }
 
     [HttpPost]
-    [ValidateAntiForgeryToken]
+    
     public async Task<IActionResult> Login(LoginViewModel model, string? returnUrl = null)
     {
         ViewData["ReturnUrl"] = returnUrl;
@@ -126,7 +126,7 @@ public class AccountController : Controller
     }
 
     [HttpPost]
-    [ValidateAntiForgeryToken]
+    
     public async Task<IActionResult> Register(RegisterViewModel model)
     {
         if (ModelState.IsValid)
@@ -148,6 +148,7 @@ public class AccountController : Controller
                 IsApproved = isApproved,
                 RoleRequested = model.RoleRequested,
                 PhoneNumber = model.Contact,
+                RecoveryEmail = model.RecoveryEmail,
             };
             
             var result = await _userManager.CreateAsync(user, model.Password);
@@ -286,7 +287,7 @@ public class AccountController : Controller
     }
 
     [HttpPost]
-    [ValidateAntiForgeryToken]
+    
     public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
     {
         if (ModelState.IsValid)
@@ -339,7 +340,7 @@ public class AccountController : Controller
     }
 
     [HttpPost]
-    [ValidateAntiForgeryToken]
+    
     public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
     {
         if (!ModelState.IsValid)

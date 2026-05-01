@@ -52,7 +52,7 @@ namespace ClinicAppointmentSystem.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        
         [Authorize(Roles = "Doctor,Admin")]
         public async Task<IActionResult> Create([Bind("Id,PatientId,DoctorId,Notes,Date")] Record @record)
         {
@@ -81,7 +81,7 @@ namespace ClinicAppointmentSystem.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        
         [Authorize(Roles = "Doctor,Admin")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,PatientId,DoctorId,Notes,Date")] Record @record)
         {
@@ -122,7 +122,7 @@ namespace ClinicAppointmentSystem.Controllers
         }
 
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
+        
         [Authorize(Roles = "Doctor,Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {

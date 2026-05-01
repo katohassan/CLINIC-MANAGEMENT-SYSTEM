@@ -12,4 +12,7 @@ public class ApplicationUser : IdentityUser
     public bool IsApproved { get; set; } = false; // Admin approval required
     
     public string RoleRequested { get; set; } = "Patient"; // "Patient", "Doctor", "Staff"
+
+    [EmailAddress]
+    public string? RecoveryEmail { get; set; }
 }

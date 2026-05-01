@@ -36,7 +36,7 @@ namespace ClinicAppointmentSystem.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        
         public async Task<IActionResult> Create([Bind("Id,DoctorId,DayOfWeek,StartTime,EndTime")] DoctorAvailability doctorAvailability)
         {
             if (ModelState.IsValid)
@@ -62,7 +62,7 @@ namespace ClinicAppointmentSystem.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        
         public async Task<IActionResult> Edit(int id, [Bind("Id,DoctorId,DayOfWeek,StartTime,EndTime")] DoctorAvailability doctorAvailability)
         {
             if (id != doctorAvailability.Id) return NotFound();
@@ -100,7 +100,7 @@ namespace ClinicAppointmentSystem.Controllers
         }
 
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
+        
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var doctorAvailability = await _context.DoctorAvailabilities.FindAsync(id);

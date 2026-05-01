@@ -41,6 +41,14 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 
+builder.Services.AddAuthentication()
+    .AddGoogle(options =>
+    {
+        IConfigurationSection googleAuthNSection = builder.Configuration.GetSection("Authentication:Google");
+        options.ClientId = googleAuthNSection["ClientId"] ?? "placeholder-client-id";
+        options.ClientSecret = googleAuthNSection["ClientSecret"] ?? "placeholder-client-secret";
+    });
+
 // ==================== COOKIE & SESSION SECURITY ====================
 builder.Services.ConfigureApplicationCookie(options =>
 {
@@ -62,12 +70,7 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.AccessDeniedPath = "/Account/AccessDenied";
 });
 
-// ==================== ADDITIONAL SECURITY HEADERS ====================
-builder.Services.AddAntiforgery(options =>
-{
-    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-    options.FormFieldName = "__RequestVerificationToken";
-});
+
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddHttpContextAccessor();

@@ -30,7 +30,7 @@ public class ClinicServicesController : Controller
 
     // POST: ClinicServices/Create
     [HttpPost]
-    [ValidateAntiForgeryToken]
+    
     public async Task<IActionResult> Create([Bind("Id,Name,Description,Price")] ClinicService clinicService)
     {
         if (ModelState.IsValid)
@@ -55,7 +55,7 @@ public class ClinicServicesController : Controller
 
     // POST: ClinicServices/Edit/5
     [HttpPost]
-    [ValidateAntiForgeryToken]
+    
     public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Price")] ClinicService clinicService)
     {
         if (id != clinicService.Id) return NotFound();
@@ -90,7 +90,7 @@ public class ClinicServicesController : Controller
 
     // POST: ClinicServices/Delete/5
     [HttpPost, ActionName("Delete")]
-    [ValidateAntiForgeryToken]
+    
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
         var clinicService = await _context.ClinicServices.FindAsync(id);

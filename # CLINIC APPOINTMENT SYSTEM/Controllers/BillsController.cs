@@ -55,7 +55,7 @@ public class BillsController : Controller
 
     // POST: Bills/Create
     [HttpPost]
-    [ValidateAntiForgeryToken]
+    
     public async Task<IActionResult> Create([Bind("AppointmentId,TotalAmount,Notes,Status")] Bill bill)
     {
         if (ModelState.IsValid)
@@ -94,7 +94,7 @@ public class BillsController : Controller
 
     // POST: Bills/MarkAsPaid/5
     [HttpPost]
-    [ValidateAntiForgeryToken]
+    
     public async Task<IActionResult> MarkAsPaid(int id)
     {
         var bill = await _context.Bills.FindAsync(id);

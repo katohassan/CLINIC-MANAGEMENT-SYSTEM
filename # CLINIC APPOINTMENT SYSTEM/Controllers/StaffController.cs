@@ -29,7 +29,7 @@ namespace ClinicAppointmentSystem.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        
         public async Task<IActionResult> Create(Staff staff)
         {
             if (ModelState.IsValid)
@@ -51,7 +51,7 @@ namespace ClinicAppointmentSystem.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        
         public async Task<IActionResult> Edit(int id, Staff staff)
         {
             if (id != staff.Id) return NotFound();
@@ -89,7 +89,7 @@ namespace ClinicAppointmentSystem.Controllers
         }
 
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
+        
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var staff = await _context.Staff.FindAsync(id);
