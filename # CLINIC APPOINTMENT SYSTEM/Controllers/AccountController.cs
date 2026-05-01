@@ -4,6 +4,8 @@ using ClinicAppointmentSystem.Models;
 using ClinicAppointmentSystem.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using System.Text.Encodings.Web;
 
 namespace ClinicAppointmentSystem.Controllers;
 
@@ -12,6 +14,7 @@ public class AccountController : Controller
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly ApplicationDbContext _context;
+    private readonly IEmailSender _emailSender;
 
     // List of allowed major email providers
     private readonly string[] _allowedEmailDomains = { "gmail.com", "yahoo.com", "outlook.com", "hotmail.com", "icloud.com" };
@@ -19,11 +22,13 @@ public class AccountController : Controller
     public AccountController(
         UserManager<ApplicationUser> userManager,
         SignInManager<ApplicationUser> signInManager,
-        ApplicationDbContext context)
+        ApplicationDbContext context,
+        IEmailSender emailSender)
     {
         _userManager = userManager;
         _signInManager = signInManager;
         _context = context;
+        _emailSender = emailSender;
     }
 
     [HttpGet]
@@ -226,19 +231,140 @@ public class AccountController : Controller
 
                 if (!isApproved)
                 {
-                    TempData["SuccessMessage"] = "Registration successful! Your account is pending admin approval.";
+                    TempData["SuccessMessage"] = "Registration successful! Your account is pending admin approval. Please check your email to verify your account.";
                     return RedirectToAction("Login");
                 }
 
-                // Automatically sign in the user
-                await _signInManager.SignInAsync(user, isPersistent: false);
-                return RedirectToAction("Index", "Home");
+                var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                var callbackUrl = Url.Action(
+                    "ConfirmEmail",
+                    "Account",
+                    new { userId = user.Id, code = code },
+                    protocol: Request.Scheme);
+
+                if (callbackUrl != null)
+                {
+                    await _emailSender.SendEmailAsync(model.Email, "Confirm your email",
+                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                }
+
+                TempData["SuccessMessage"] = "Registration successful! Please check your email to verify your account before logging in.";
+                return RedirectToAction("Login");
             }
 
             foreach (var error in result.Errors)
             {
                 ModelState.AddModelError(string.Empty, error.Description);
             }
+        }
+        return View(model);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> ConfirmEmail(string userId, string code)
+    {
+        if (userId == null || code == null)
+        {
+            return RedirectToAction("Index", "Home");
+        }
+
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user == null)
+        {
+            return NotFound($"Unable to load user with ID '{userId}'.");
+        }
+
+        var result = await _userManager.ConfirmEmailAsync(user, code);
+        TempData["SuccessMessage"] = result.Succeeded ? "Thank you for confirming your email. You can now log in." : "Error confirming your email.";
+        return RedirectToAction("Login");
+    }
+
+    [HttpGet]
+    public IActionResult ForgotPassword()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
+    {
+        if (ModelState.IsValid)
+        {
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
+            {
+                // Don't reveal that the user does not exist or is not confirmed
+                TempData["SuccessMessage"] = "If an account with this email exists and is confirmed, a password reset link has been sent.";
+                return RedirectToAction("Login");
+            }
+
+            var code = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var callbackUrl = Url.Action(
+                "ResetPassword",
+                "Account",
+                new { code },
+                protocol: Request.Scheme);
+
+            if (callbackUrl != null)
+            {
+                await _emailSender.SendEmailAsync(
+                    model.Email,
+                    "Reset Password",
+                    $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+            }
+
+            TempData["SuccessMessage"] = "If an account with this email exists and is confirmed, a password reset link has been sent.";
+            return RedirectToAction("Login");
+        }
+
+        return View(model);
+    }
+
+    [HttpGet]
+    public IActionResult ResetPassword(string? code = null)
+    {
+        if (code == null)
+        {
+            return BadRequest("A code must be supplied for password reset.");
+        }
+        else
+        {
+            var model = new ResetPasswordViewModel
+            {
+                Code = code
+            };
+            return View(model);
+        }
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            return View(model);
+        }
+
+        var user = await _userManager.FindByEmailAsync(model.Email);
+        if (user == null)
+        {
+            // Don't reveal that the user does not exist
+            TempData["SuccessMessage"] = "Your password has been reset successfully. Please log in.";
+            return RedirectToAction("Login");
+        }
+
+        var result = await _userManager.ResetPasswordAsync(user, model.Code, model.Password);
+        if (result.Succeeded)
+        {
+            TempData["SuccessMessage"] = "Your password has been reset successfully. Please log in.";
+            return RedirectToAction("Login");
+        }
+
+        foreach (var error in result.Errors)
+        {
+            ModelState.AddModelError(string.Empty, error.Description);
         }
         return View(model);
     }

@@ -339,13 +339,23 @@
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label asp-for="Password" class="form-label">Password</label>
-                            <input asp-for="Password" class="form-control" type="password" placeholder="Create a strong password" />
+                            <div class="input-group">
+                                <input asp-for="Password" class="form-control" type="password" placeholder="Create a strong password" id="Password" />
+                                <button class="btn btn-outline-secondary toggle-password" type="button" data-target="Password">
+                                    <i class="far fa-eye"></i>
+                                </button>
+                            </div>
                             <span asp-validation-for="Password" class="text-danger"></span>
                         </div>
 
                         <div class="col-md-6 mb-3">
                             <label asp-for="ConfirmPassword" class="form-label">Confirm Password</label>
-                            <input asp-for="ConfirmPassword" class="form-control" type="password" placeholder="Re-enter your password" />
+                            <div class="input-group">
+                                <input asp-for="ConfirmPassword" class="form-control" type="password" placeholder="Re-enter your password" id="ConfirmPassword" />
+                                <button class="btn btn-outline-secondary toggle-password" type="button" data-target="ConfirmPassword">
+                                    <i class="far fa-eye"></i>
+                                </button>
+                            </div>
                             <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
                         </div>
                     </div>
@@ -463,6 +473,20 @@
             // initial
             updatePasswordUI();
             updateSubmitState();
+
+            // Toggle password visibility
+            $('.toggle-password').click(function() {
+                var targetId = $(this).data('target');
+                var input = $('#' + targetId);
+                var icon = $(this).find('i');
+                if (input.attr('type') === 'password') {
+                    input.attr('type', 'text');
+                    icon.removeClass('fa-eye').addClass('fa-eye-slash');
+                } else {
+                    input.attr('type', 'password');
+                    icon.removeClass('fa-eye-slash').addClass('fa-eye');
+                }
+            });
         });
     </script>
     @section Scripts {

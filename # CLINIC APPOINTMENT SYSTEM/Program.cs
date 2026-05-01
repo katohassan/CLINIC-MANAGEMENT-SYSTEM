@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using ClinicAppointmentSystem.Data;
 using ClinicAppointmentSystem.Hubs;
 using ClinicAppointmentSystem.Models;
+using ClinicAppointmentSystem.Services;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,7 +36,10 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
     options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";  // Allowed chars
 })
     .AddRoles<IdentityRole>()
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultTokenProviders();
+
+builder.Services.AddTransient<IEmailSender, EmailSender>();
 
 // ==================== COOKIE & SESSION SECURITY ====================
 builder.Services.ConfigureApplicationCookie(options =>
