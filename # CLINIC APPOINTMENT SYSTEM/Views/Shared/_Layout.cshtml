@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -47,6 +47,13 @@
                             <i class="fa-solid fa-file-medical"></i> Medical Records
                         </a>
                     </li>
+
+                    <p class="text-uppercase fw-bold ps-3 mb-1 mt-4" style="font-size:0.75rem;">Finance & Billing</p>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <li><a href="/ClinicServices"><i class="fa-solid fa-hand-holding-medical"></i> Clinic Services</a></li>
+                    }
+                    <li><a href="/Bills"><i class="fa-solid fa-file-invoice-dollar"></i> Manage Invoices</a></li>
                 </ul>
             </nav>
 

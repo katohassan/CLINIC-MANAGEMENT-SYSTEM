@@ -1,0 +1,124 @@
+@model IEnumerable<ClinicAppointmentSystem.Models.Bill>
+
+@{
+    ViewData["Title"] = "Invoices & Billing";
+}
+
+<style>
+    .glass-panel {
+        background: rgba(255, 255, 255, 0.4);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        border-radius: 24px;
+        padding: 40px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+    }
+
+    .bill-row {
+        background: rgba(255, 255, 255, 0.5);
+        border-radius: 16px;
+        margin-bottom: 12px;
+        padding: 15px 25px;
+        transition: all 0.3s ease;
+        border: 1px solid transparent;
+    }
+
+    .bill-row:hover {
+        background: rgba(255, 255, 255, 0.8);
+        border-color: rgba(66, 133, 244, 0.3);
+        transform: translateY(-2px);
+    }
+
+    .status-badge {
+        padding: 8px 16px;
+        border-radius: 30px;
+        font-size: 0.8rem;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+
+    .status-paid { background: #e6f7ed; color: #1e7e34; }
+    .status-pending { background: #fff8e1; color: #f9a825; }
+    .status-overdue { background: #ffebee; color: #d32f2f; }
+
+    .amount-text {
+        font-family: 'Courier New', Courier, monospace;
+        font-weight: bold;
+        font-size: 1.2rem;
+    }
+
+    .btn-action {
+        width: 38px;
+        height: 38px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 10px;
+        background: white;
+        color: #333;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        transition: all 0.2s;
+    }
+
+    .btn-action:hover {
+        background: #f8f9fa;
+        color: #4285f4;
+        transform: scale(1.1);
+    }
+</style>
+
+<div class="container mt-5">
+    <div class="glass-panel">
+        <div class="d-flex justify-content-between align-items-center mb-5">
+            <div>
+                <h1 class="fw-bold text-dark">Patient Invoices</h1>
+                <p class="text-muted mb-0">Track payments, issue bills, and manage clinic revenue.</p>
+            </div>
+            <a asp-action="Create" class="btn btn-primary rounded-pill px-4 py-2 fw-bold shadow">
+                <i class="fas fa-file-invoice-dollar me-2"></i> New Bill
+            </a>
+        </div>
+
+        <div class="row fw-bold text-muted small text-uppercase mb-3 px-4">
+            <div class="col-md-3">Patient</div>
+            <div class="col-md-2">Issued Date</div>
+            <div class="col-md-2 text-center">Amount</div>
+            <div class="col-md-2 text-center">Status</div>
+            <div class="col-md-3 text-end">Actions</div>
+        </div>
+
+        @foreach (var item in Model)
+        {
+            <div class="bill-row shadow-sm d-flex align-items-center">
+                <div class="col-md-3">
+                    <span class="fw-bold text-dark">@item.Appointment?.Patient?.Name</span>
+                    <div class="small text-muted">Inv #@item.Id.ToString("D4")</div>
+                </div>
+                <div class="col-md-2 text-muted">
+                    @item.IssuedDate.ToString("MMM dd, yyyy")
+                </div>
+                <div class="col-md-2 text-center">
+                    <span class="amount-text text-primary">$@item.TotalAmount</span>
+                </div>
+                <div class="col-md-2 text-center">
+                    <span class="status-badge status-@(item.Status.ToLower())">
+                        @item.Status
+                    </span>
+                </div>
+                <div class="col-md-3 text-end">
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn-action" title="View/Print"><i class="fas fa-eye"></i></a>
+                    @if (item.Status != "Paid")
+                    {
+                        <form asp-action="MarkAsPaid" asp-route-id="@item.Id" method="post" class="d-inline">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn-action border-0 text-success" title="Mark as Paid">
+                                <i class="fas fa-check-circle"></i>
+                            </button>
+                        </form>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</div>

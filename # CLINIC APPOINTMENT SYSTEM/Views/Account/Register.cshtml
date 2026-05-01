@@ -1,0 +1,147 @@
+@model ClinicAppointmentSystem.Models.RegisterViewModel
+
+@{
+    ViewData["Title"] = "Patient Registration";
+}
+
+<style>
+    body {
+        /* Beautiful vibrant background for registration */
+        background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+        min-height: 100vh;
+    }
+    
+    .registration-container {
+        padding: 50px 15px;
+    }
+
+    .glass-card {
+        background: rgba(255, 255, 255, 0.4);
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        border-radius: 20px;
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+        max-width: 700px;
+        width: 100%;
+        animation: fadeIn 0.8s ease-out;
+    }
+
+    @@keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .text-gradient {
+        background: linear-gradient(45deg, #1d2b64, #f8cdda);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .glass-input {
+        background: rgba(255, 255, 255, 0.6) !important;
+        border: 1px solid rgba(255, 255, 255, 0.8) !important;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+    }
+
+    .glass-input:focus {
+        background: rgba(255, 255, 255, 0.9) !important;
+        box-shadow: 0 0 10px rgba(142, 197, 252, 0.5) !important;
+        border-color: #8ec5fc !important;
+    }
+
+    .glass-btn {
+        background: linear-gradient(45deg, #8ec5fc, #e0c3fc) !important;
+        border: none;
+        color: #fff;
+        transition: all 0.3s ease;
+    }
+
+    .glass-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(142, 197, 252, 0.6) !important;
+    }
+</style>
+
+<div class="registration-container d-flex justify-content-center align-items-center">
+    <div class="glass-card p-4 p-md-5">
+        <div class="text-center mb-4">
+            <h2 class="fw-bold text-gradient">Create Account</h2>
+            <p class="text-dark">Register as a patient to book appointments & view your medical records.</p>
+        </div>
+
+        <form asp-action="Register" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3 fw-bold bg-white bg-opacity-75 p-2 rounded"></div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Name" class="form-label text-dark fw-bold">Full Name</label>
+                    <input asp-for="Name" class="form-control glass-input" placeholder="e.g. John Doe" />
+                    <span asp-validation-for="Name" class="text-danger small fw-bold"></span>
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <label asp-for="DateOfBirth" class="form-label text-dark fw-bold">Date of Birth</label>
+                    <input asp-for="DateOfBirth" class="form-control glass-input" type="date" />
+                    <span asp-validation-for="DateOfBirth" class="text-danger small fw-bold"></span>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label text-dark fw-bold">Email Address</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-transparent border-white">@@</span>
+                  <input asp-for="Email" class="form-control glass-input" placeholder="Valid channels (gmail.com, yahoo.com...)" type="email" />
+                </div>
+                <span asp-validation-for="Email" class="text-danger small fw-bold"></span>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Contact" class="form-label text-dark fw-bold">Phone Number</label>
+                    <input asp-for="Contact" class="form-control glass-input" placeholder="+123456789" />
+                    <span asp-validation-for="Contact" class="text-danger small fw-bold"></span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Address" class="form-label text-dark fw-bold">Home Address</label>
+                    <input asp-for="Address" class="form-control glass-input" placeholder="123 Health Ave" />
+                    <span asp-validation-for="Address" class="text-danger small fw-bold"></span>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Bio" class="form-label text-dark fw-bold">Bio / Medical History (Optional)</label>
+                <textarea asp-for="Bio" class="form-control glass-input" rows="3" placeholder="List any allergies, past surgeries, or ongoing issues..."></textarea>
+                <span asp-validation-for="Bio" class="text-danger small fw-bold"></span>
+            </div>
+
+            <hr class="my-4 border-white" />
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Password" class="form-label text-dark fw-bold">Password</label>
+                    <input asp-for="Password" class="form-control glass-input" type="password" />
+                    <span asp-validation-for="Password" class="text-danger small fw-bold"></span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label asp-for="ConfirmPassword" class="form-label text-dark fw-bold">Confirm Password</label>
+                    <input asp-for="ConfirmPassword" class="form-control glass-input" type="password" />
+                    <span asp-validation-for="ConfirmPassword" class="text-danger small fw-bold"></span>
+                </div>
+            </div>
+
+            <div class="d-grid mt-4">
+                <button type="submit" class="btn glass-btn rounded-pill fw-bold py-3 shadow">
+                    Complete Secure Registration
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

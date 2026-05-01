@@ -45,6 +45,10 @@
                     </td>
                     <td>
                         <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Edit</a>
+                        @if (User.IsInRole("Admin") || User.IsInRole("Receptionist"))
+                        {
+                            <a asp-controller="Bills" asp-action="Create" asp-route-appointmentId="@item.Id" class="btn btn-sm btn-outline-primary" title="Generate Invoice"><i class="fas fa-file-invoice-dollar"></i></a>
+                        }
                         <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Cancel/Delete</a>
                     </td>
                 </tr>

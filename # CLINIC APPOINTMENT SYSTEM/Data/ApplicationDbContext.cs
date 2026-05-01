@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace ClinicAppointmentSystem.Data;
@@ -9,4 +9,6 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<ClinicAppointmentSystem.Models.Doctor> Doctors { get; set; } = default!;
     public DbSet<ClinicAppointmentSystem.Models.Appointment> Appointments { get; set; } = default!;
     public DbSet<ClinicAppointmentSystem.Models.Record> Records { get; set; } = default!;
+    public DbSet<ClinicAppointmentSystem.Models.ClinicService> ClinicServices { get; set; } = default!;
+    public DbSet<ClinicAppointmentSystem.Models.Bill> Bills { get; set; } = default!;
 }

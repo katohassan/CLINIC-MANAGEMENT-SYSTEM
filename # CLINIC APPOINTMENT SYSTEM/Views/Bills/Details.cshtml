@@ -1,0 +1,165 @@
+@model ClinicAppointmentSystem.Models.Bill
+
+@{
+    ViewData["Title"] = "Invoice Detail";
+}
+
+<style>
+    .invoice-card {
+        background: white;
+        border-radius: 0; 
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        padding: 60px;
+        margin: 40px auto;
+        max-width: 900px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .invoice-header {
+        border-bottom: 2px solid #f8f9fa;
+        padding-bottom: 30px;
+        margin-bottom: 30px;
+    }
+
+    .brand-logo {
+        font-size: 2rem;
+        font-weight: 800;
+        color: #4285f4;
+    }
+
+    .invoice-label {
+        font-size: 3rem;
+        font-weight: 800;
+        color: #e9ecef;
+        text-transform: uppercase;
+        position: absolute;
+        right: 60px;
+        top: 60px;
+    }
+
+    .info-table { width: 100%; margin-bottom: 40px; }
+    .info-table td { padding: 10px 0; border-bottom: 1px solid #f8f9fa; }
+    .info-label { font-weight: bold; color: #6c757d; width: 150px; text-transform: uppercase; font-size: 0.8rem; }
+
+    .paid-stamp {
+        border: 4px solid #1e7e34;
+        color: #1e7e34;
+        padding: 10px 30px;
+        font-size: 2rem;
+        font-weight: 900;
+        text-transform: uppercase;
+        transform: rotate(-15deg);
+        display: inline-block;
+        border-radius: 10px;
+        opacity: 0.8;
+    }
+
+    .pending-stamp {
+        border: 4px solid #f9a825;
+        color: #f9a825;
+        padding: 10px 30px;
+        font-size: 2rem;
+        font-weight: 900;
+        text-transform: uppercase;
+        transform: rotate(-15deg);
+        display: inline-block;
+        border-radius: 10px;
+        opacity: 0.8;
+    }
+
+    @@media print {
+        .no-print { display: none !important; }
+        .invoice-card { box-shadow: none; margin: 0; padding: 20px; max-width: 100%; }
+        body { background: white !important; }
+    }
+</style>
+
+<div class="container d-flex flex-column align-items-center">
+    
+    <div class="no-print mt-4 mb-2">
+        <button onclick="window.print()" class="btn btn-dark rounded-pill px-4">
+            <i class="fas fa-print me-2"></i> Print Invoice
+        </button>
+        <a asp-action="Index" class="btn btn-outline-secondary rounded-pill px-4 ms-2">Back to List</a>
+    </div>
+
+    <div class="invoice-card position-relative">
+        <div class="invoice-label">Invoice</div>
+        
+        <div class="invoice-header d-flex justify-content-between align-items-start">
+            <div>
+                <div class="brand-logo">MedCare Clinic</div>
+                <p class="text-muted small">123 Healthcare Blvd, Medical District<br />Phone: (555) 123-4567<br />Email: billing@@medcare.com</p>
+            </div>
+            <div class="text-end">
+                <h5 class="fw-bold mb-1">Invoice #@Model.Id.ToString("D4")</h5>
+                <p class="text-muted small">Issued Date: @Model.IssuedDate.ToString("D")</p>
+            </div>
+        </div>
+
+        <div class="row mb-5">
+            <div class="col-6">
+                <h6 class="text-uppercase fw-bold text-muted small mb-3">Bill To:</h6>
+                <div class="h5 fw-bold mb-1">@Model.Appointment?.Patient?.Name</div>
+                <p class="text-muted small">
+                    Patient ID: PAT-@Model.Appointment?.PatientId.ToString("D5")<br />
+                    Contact: @Model.Appointment?.Patient?.Contact<br />
+                    Address: @Model.Appointment?.Patient?.Address
+                </p>
+            </div>
+            <div class="col-6 text-end">
+                <h6 class="text-uppercase fw-bold text-muted small mb-3">Appointment Ref:</h6>
+                <p class="small">
+                    Date: @Model.Appointment?.Date.ToString("f")<br />
+                    Doctor: @Model.Appointment?.Doctor?.Name<br />
+                    Status: @Model.Appointment?.Status
+                </p>
+            </div>
+        </div>
+
+        <table class="info-table">
+            <thead>
+                <tr class="text-uppercase small fw-bold text-muted">
+                    <td class="border-bottom-2">Description</td>
+                    <td class="text-end border-bottom-2">Amount</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="py-4">
+                        <div class="fw-bold">Medical Consultation / Treatment</div>
+                        <div class="text-muted small">@Model.Notes</div>
+                    </td>
+                    <td class="text-end py-4 h5 fw-bold">$@Model.TotalAmount</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td class="text-end fw-bold py-3">Total Amount Due:</td>
+                    <td class="text-end fw-bold py-3 h4">$@Model.TotalAmount</td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <div class="row align-items-center mt-5">
+            <div class="col-8">
+                <p class="text-muted small italic">Note: Please keep this copy for your medical records and insurance claims. Payments are due within 30 days of issuance.</p>
+            </div>
+            <div class="col-4 text-center">
+                @if (Model.Status == "Paid")
+                {
+                    <div class="paid-stamp">Paid</div>
+                    <div class="small text-success mt-2">On @Model.PaidDate?.ToString("d")</div>
+                }
+                else
+                {
+                    <div class="pending-stamp">Pending</div>
+                }
+            </div>
+        </div>
+
+        <div class="text-center mt-5 pt-5 border-top border-light">
+            <p class="small text-muted mb-0">Thank you for choosing MedCare Clinic. We wish you a speedy recovery!</p>
+        </div>
+    </div>
+</div>
