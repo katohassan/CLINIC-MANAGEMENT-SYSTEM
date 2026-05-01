@@ -1,0 +1,93 @@
+@model ClinicAppointmentSystem.Models.Appointment
+
+@{
+    ViewData["Title"] = "Book Appointment";
+}
+
+<div class="row justify-content-center mt-5">
+    <div class="col-lg-8 col-md-10">
+        <div class="card shadow-lg border-0 rounded-4">
+            <div class="card-header bg-primary text-white text-center py-4 rounded-top-4">
+                <h3 class="fw-bold mb-0"><i class="fa-solid fa-calendar-plus me-2"></i> Book Your Appointment</h3>
+                <p class="mb-0 mt-2 opacity-75">Select a doctor, date, and time slot for your consultation.</p>
+            </div>
+            <div class="card-body p-5 bg-white">
+                <form asp-action="Create" id="bookingForm">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger rounded-3"></div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label asp-for="PatientId" class="form-label fw-bold text-secondary">Patient Profile</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light text-primary border-0"><i class="fa-solid fa-user"></i></span>
+                                <select asp-for="PatientId" class="form-select bg-light border-0 py-3" asp-items="ViewBag.PatientId"></select>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mt-4 mt-md-0">
+                            <label asp-for="DoctorId" class="form-label fw-bold text-secondary">Attending Doctor</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light text-primary border-0"><i class="fa-solid fa-user-doctor"></i></span>
+                                <select asp-for="DoctorId" class="form-select bg-light border-0 py-3" asp-items="ViewBag.DoctorId"></select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="text-muted opacity-25 mb-4">
+
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label asp-for="Date" class="form-label fw-bold text-secondary">Appointment Date</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light text-primary border-0"><i class="fa-regular fa-calendar"></i></span>
+                                <input asp-for="Date" type="date" class="form-control bg-light border-0 py-3" id="apptDate" required />
+                            </div>
+                            <span asp-validation-for="Date" class="text-danger small mt-1 d-block"></span>
+                        </div>
+                        <div class="col-md-6 mt-4 mt-md-0">
+                            <label asp-for="Time" class="form-label fw-bold text-secondary">Preferred Time Slot</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light text-primary border-0"><i class="fa-regular fa-clock"></i></span>
+                                <input asp-for="Time" type="time" class="form-control bg-light border-0 py-3" required />
+                            </div>
+                            <span asp-validation-for="Time" class="text-danger small mt-1 d-block"></span>
+                        </div>
+                    </div>
+
+                    <!-- Hidden default status -->
+                    <input type="hidden" asp-for="Status" value="Pending" />
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-5">
+                        <a asp-action="Index" class="btn btn-light px-4 py-2 text-secondary fw-bold rounded-pill">Cancel</a>
+                        <button type="submit" class="btn btn-primary px-5 py-2 fw-bold shadow rounded-pill" id="btnSubmit">Confirm Booking</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $(document).ready(function () {
+            // Basic client side UX improvements
+            $('#bookingForm').on('submit', function() {
+                var btn = $('#btnSubmit');
+                if($(this).valid()){
+                    btn.html('<i class="fa-solid fa-circle-notch fa-spin me-2"></i> Scheduling...');
+                    btn.prop('disabled', true);
+                }
+            });
+
+            // Restrict past dates dynamically
+            var dtToday = new Date();
+            var month = dtToday.getMonth() + 1;
+            var day = dtToday.getDate();
+            var year = dtToday.getFullYear();
+            if(month < 10) month = '0' + month.toString();
+            if(day < 10) day = '0' + day.toString();
+            var maxDate = year + '-' + month + '-' + day;
+            $('#apptDate').attr('min', maxDate);
+        });
+    </script>
+}

@@ -1,0 +1,44 @@
+@model List<ClinicAppointmentSystem.Models.ManageUserRolesViewModel>
+
+@{
+    var userId = ViewBag.userId;
+    var userName = ViewBag.UserName;
+}
+
+<div class="row justify-content-center mt-5">
+    <div class="col-lg-6 col-md-8">
+        <div class="card shadow-lg border-0 rounded-4">
+            <div class="card-header bg-primary text-white py-4 rounded-top-4 text-center">
+                <h4 class="mb-0 fw-bold"><i class="fa-solid fa-user-shield me-2"></i> Role Assignments</h4>
+                <p class="mb-0 mt-1 opacity-75">Modifying permissions for @userName</p>
+            </div>
+            
+            <form asp-action="Manage" asp-route-userId="@userId" method="post">
+                <div class="card-body p-5 bg-white">
+                    <div asp-validation-summary="All" class="text-danger mb-4"></div>
+                    
+                    <ul class="list-group list-group-flush mb-4">
+                        @for (int i = 0; i < Model.Count; i++)
+                        {
+                            <li class="list-group-item py-3 px-4 d-flex justify-content-between align-items-center">
+                                <div class="form-check form-switch ps-0">
+                                    <input type="hidden" asp-for="@Model[i].RoleId" />
+                                    <input type="hidden" asp-for="@Model[i].RoleName" />
+                                    <label class="form-check-label fw-bold h5 mb-0" style="margin-left: 2.5rem;" asp-for="@Model[i].Selected">
+                                        @Model[i].RoleName
+                                    </label>
+                                    <input asp-for="@Model[i].Selected" class="form-check-input ms-0" type="checkbox" style="width: 2.5rem; height: 1.25rem;">
+                                </div>
+                            </li>
+                        }
+                    </ul>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                        <a asp-action="Index" class="btn btn-light px-4 py-2 text-secondary fw-bold rounded-pill">Cancel</a>
+                        <button type="submit" class="btn btn-primary px-5 py-2 fw-bold shadow rounded-pill">Update Privileges</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

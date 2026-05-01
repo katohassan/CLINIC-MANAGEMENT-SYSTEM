@@ -1,0 +1,33 @@
+@model IEnumerable<ClinicAppointmentSystem.Models.Record>
+
+<div class="card shadow-sm border-0 rounded-4">
+    <div class="card-header bg-white border-bottom py-3">
+        <h5 class="mb-0 fw-bold text-primary"><i class="fa-solid fa-clipboard-list me-2"></i> Recent Clinical Activity</h5>
+    </div>
+    <div class="card-body p-0">
+        <ul class="list-group list-group-flush">
+            @if (Model.Any())
+            {
+                foreach (var record in Model)
+                {
+                    <li class="list-group-item px-4 py-3 border-bottom">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-1 fw-bold text-dark">@(record.Patient?.Name ?? "Unknown Patient")</h6>
+                                <small class="text-muted">Treated by: @(record.Doctor?.Name ?? "Unknown Doctor")</small>
+                            </div>
+                            <span class="badge bg-light text-secondary border">@record.Date.ToString("MMM dd, yyyy")</span>
+                        </div>
+                        <p class="mb-0 mt-2 text-muted small"><i class="fa-solid fa-notes-medical text-primary me-1"></i> @(record.Notes.Length > 60 ? record.Notes.Substring(0, 60) + "..." : record.Notes)</p>
+                    </li>
+                }
+            }
+            else
+            {
+                <li class="list-group-item text-center text-muted py-4">
+                    <i>No recent clinical records found.</i>
+                </li>
+            }
+        </ul>
+    </div>
+</div>

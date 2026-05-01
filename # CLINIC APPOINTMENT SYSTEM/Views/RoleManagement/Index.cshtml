@@ -1,0 +1,53 @@
+@model IEnumerable<ClinicAppointmentSystem.Models.UserRolesViewModel>
+
+@{
+    ViewData["Title"] = "User Profiles Library";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold text-dark m-0"><i class="fa-solid fa-users-gear text-primary"></i> Registered Users</h2>
+</div>
+
+<div class="card border-0 shadow-sm rounded-4">
+    <div class="card-body p-4">
+        <div class="table-responsive">
+            <table class="table table-striped table-hover datatable align-middle">
+                <thead class="bg-light">
+                    <tr>
+                        <th class="ps-3">Email Address</th>
+                        <th>Assigned Roles</th>
+                        <th class="text-end pe-3">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in Model)
+                    {
+                        <tr>
+                            <td class="ps-3 fw-bold">@user.Email</td>
+                            <td>
+                                @if (user.Roles.Any())
+                                {
+                                    foreach (var role in user.Roles)
+                                    {
+                                        <span class="badge rounded-pill @(role == "Admin" ? "bg-danger" : role == "Doctor" ? "bg-primary" : "bg-success") px-3 me-1">
+                                            @role
+                                        </span>
+                                    }
+                                }
+                                else
+                                {
+                                    <span class="badge rounded-pill bg-secondary px-3">Unassigned Client</span>
+                                }
+                            </td>
+                            <td class="text-end pe-3">
+                                <a asp-action="Manage" asp-route-userId="@user.UserId" class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-bold shadow-sm">
+                                    <i class="fa-solid fa-user-pen"></i> Promulgate Role
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

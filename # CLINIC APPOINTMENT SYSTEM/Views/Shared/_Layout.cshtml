@@ -1,0 +1,127 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - MedCare</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" />
+    <link rel="stylesheet" href="~/css/healthcare.css" asp-append-version="true" />
+</head>
+<body>
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        <div class="wrapper">
+            <!-- Professional Sidebar -->
+            <nav class="sidebar">
+                <div class="sidebar-header text-center py-4">
+                    <h3 class="fw-bold text-primary m-0"><i class="fa-solid fa-staff-snake"></i> MedCare</h3>
+                </div>
+                <ul class="list-unstyled w-100 flex-column mt-3">
+                    <p class="text-uppercase fw-bold ps-3 mb-1" style="font-size:0.75rem;">Main Navigation</p>
+                    <li class="nav-item">
+                        <a href="/" class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "Home" ? "active" : "")">
+                            <i class="fa-solid fa-house"></i> Home
+                        </a>
+                    </li>
+                    
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <p class="text-uppercase fw-bold ps-3 mb-1 mt-4" style="font-size:0.75rem;">Admin Dashboard</p>
+                        <li><a href="/Admin/Dashboard"><i class="fa-solid fa-chart-line"></i> Statistics</a></li>
+                        <li><a href="/RoleManagement"><i class="fa-solid fa-user-shield"></i> User Identities</a></li>
+                        <li><a href="/Doctors"><i class="fa-solid fa-user-doctor"></i> Manage Doctors</a></li>
+                        <li><a href="/Patients"><i class="fa-solid fa-hospital-user"></i> Manage Patients</a></li>
+                    }
+
+                    <p class="text-uppercase fw-bold ps-3 mb-1 mt-4" style="font-size:0.75rem;">Clinical</p>
+                    <li>
+                        <a href="/Appointments/Index">
+                            <i class="fa-regular fa-calendar-check"></i> Appointments
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/Records/Index">
+                            <i class="fa-solid fa-file-medical"></i> Medical Records
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="content">
+                <!-- Top Navbar inside wrapper -->
+                <nav class="navbar navbar-expand-lg navbar-light bg-white rounded shadow-sm mb-4 px-3" style="min-height: 60px;">
+                    <button type="button" class="btn btn-light d-md-none" id="sidebarCollapse">
+                        <i class="fas fa-align-justify"></i>
+                    </button>
+                    <div class="ms-auto">
+                        <partial name="_LoginPartial" />
+                    </div>
+                </nav>
+
+                <main role="main" class="pb-3">
+                    @RenderBody()
+                </main>
+            </div>
+        </div>
+    }
+    else
+    {
+        <!-- Public Layout -->
+        <header>
+            <nav class="navbar healthcare-navbar navbar-expand-sm navbar-dark mb-4">
+                <div class="container">
+                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                        <i class="fa-solid fa-staff-snake"></i> MedCare
+                    </a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="navbar-collapse collapse d-sm-inline-flex justify-content-end">
+                        <partial name="_LoginPartial" />
+                    </div>
+                </div>
+            </nav>
+        </header>
+        <main role="main" class="pb-3 w-100">
+            @RenderBody()
+        </main>
+        <footer class="border-top footer text-muted bg-white mt-auto py-3">
+            <div class="container text-center text-sm-start">
+                &copy; 2026 - MedCare Hospital System - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy Policy</a>
+            </div>
+        </footer>
+    }
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Initialize global DataTables for any table with class 'datatable'
+            if ($('.datatable').length) {
+                $('.datatable').DataTable({
+                    "language": {
+                        "search": "Quick Filter: ",
+                        "lengthMenu": "Display _MENU_ records per page"
+                    },
+                    "pageLength": 10
+                });
+            }
+
+            $('#sidebarCollapse').on('click', function () {
+                $('.sidebar').toggleClass('active');
+                if($('.sidebar').css('margin-left') == '-250px') {
+                    $('.sidebar').css('margin-left', '0');
+                } else {
+                    $('.sidebar').css('margin-left', '-250px');
+                }
+            });
+        });
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

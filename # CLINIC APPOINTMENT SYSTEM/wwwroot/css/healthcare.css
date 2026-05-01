@@ -1,0 +1,167 @@
+:root {
+    --primary-color: #0d47a1; /* Deep Trust Blue */
+    --secondary-color: #1976d2;
+    --accent-color: #00bfa5; /* Teal for health/action */
+    --bg-color: #f4f7f6;
+    --sidebar-bg: #ffffff;
+    --text-main: #333333;
+    --text-muted: #6c757d;
+    --card-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    --hover-shadow: 0 10px 20px rgba(0,0,0,0.08);
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    overflow-x: hidden;
+}
+
+/* Navbar */
+.healthcare-navbar {
+    background-color: var(--primary-color) !important;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    padding: 10px 20px;
+}
+.healthcare-navbar .navbar-brand {
+    color: #ffffff !important;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+.healthcare-navbar .nav-link {
+    color: rgba(255,255,255,0.85) !important;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+.healthcare-navbar .nav-link:hover {
+    color: #ffffff !important;
+}
+
+/* Sidebar Dashboard Layout */
+.wrapper {
+    display: flex;
+    width: 100%;
+    align-items: stretch;
+}
+.sidebar {
+    min-width: 250px;
+    max-width: 250px;
+    background: var(--sidebar-bg);
+    min-height: calc(100vh - 60px);
+    box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+    transition: all 0.3s;
+}
+.sidebar .sidebar-header {
+    padding: 20px;
+    background: var(--sidebar-bg);
+    border-bottom: 1px solid #eee;
+}
+.sidebar ul p {
+    color: var(--text-muted);
+    padding: 10px;
+}
+.sidebar ul li a {
+    padding: 15px 20px;
+    font-size: 1.05em;
+    display: block;
+    color: var(--text-main);
+    text-decoration: none;
+    transition: all 0.3s;
+    border-left: 4px solid transparent;
+}
+.sidebar ul li a:hover, .sidebar ul li.active > a {
+    color: var(--primary-color);
+    background: #f8f9fa;
+    border-left: 4px solid var(--accent-color);
+}
+.sidebar ul li a i {
+    margin-right: 10px;
+    color: var(--secondary-color);
+}
+
+/* Content Area */
+.content {
+    width: 100%;
+    padding: 30px;
+    transition: all 0.3s;
+}
+
+/* Cards */
+.card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: var(--card-shadow);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+.card:hover {
+    box-shadow: var(--hover-shadow);
+    transform: translateY(-3px);
+}
+.card-header {
+    background-color: transparent;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+.btn-primary:hover {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+}
+.btn-accent {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+    color: white;
+}
+.btn-accent:hover {
+    background-color: #00a08a;
+    border-color: #00a08a;
+    color: white;
+}
+.btn-rounded {
+    border-radius: 50px;
+}
+
+/* Tables */
+.table {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+}
+.table thead th {
+    border-bottom: 2px solid #eee;
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+}
+.table tbody td {
+    vertical-align: middle;
+}
+
+/* Forms */
+.form-control {
+    border-radius: 8px;
+    border: 1px solid #dde2e5;
+    padding: 10px 15px;
+}
+.form-control:focus {
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 0 0.2rem rgba(25, 118, 210, 0.25);
+}
+
+/* Hero Section */
+.hero-hospital {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    color: white;
+    padding: 60px 40px;
+    border-radius: 16px;
+    margin-bottom: 30px;
+    box-shadow: 0 10px 30px rgba(13, 71, 161, 0.2);
+}

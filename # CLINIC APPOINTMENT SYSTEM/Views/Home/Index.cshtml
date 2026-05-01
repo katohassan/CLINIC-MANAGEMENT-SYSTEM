@@ -1,0 +1,176 @@
+﻿@{
+    ViewData["Title"] = "Clinic Appointment Management";
+}
+
+<style>
+    .hero-section {
+        background: linear-gradient(135deg, #007bff 0%, #00d2ff 100%);
+        color: white;
+        padding: 80px 0;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 123, 255, 0.3);
+        margin-bottom: 40px;
+    }
+
+    .feature-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: none;
+        border-radius: 12px;
+        background: #ffffff;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        height: 100%;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+    }
+
+    .feature-icon {
+        font-size: 3rem;
+        margin-bottom: 20px;
+        background: -webkit-linear-gradient(#007bff, #00d2ff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .btn-rounded {
+        border-radius: 50px;
+        padding: 10px 30px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+</style>
+
+<div class="container-fluid px-0">
+    <div class="row text-center hero-section mx-0 align-items-center">
+        <div class="col-md-8 mx-auto">
+            <h1 class="display-3 fw-bold mb-4">Your Health, Perfectly Managed</h1>
+            <p class="lead fw-normal mb-5">Seamless scheduling, instant updates, and detailed medical records all in one modern platform.</p>
+            
+            @if (!User.Identity?.IsAuthenticated == true)
+            {
+                <div class="d-flex justify-content-center gap-3">
+                    <a href="/Identity/Account/Register" class="btn btn-light btn-lg btn-rounded text-primary shadow">Register Today</a>
+                    <a href="/Identity/Account/Login" class="btn btn-outline-light btn-lg btn-rounded">Login</a>
+                </div>
+            }
+            else
+            {
+                <h4 class="fw-light">Welcome back, @User.Identity?.Name!</h4>
+            }
+        </div>
+    </div>
+
+    <!-- Features Section / Dashboard Access -->
+    <div class="container mb-5">
+        <h2 class="text-center fw-bold mb-5 text-dark">Quick Navigation</h2>
+        <div class="row g-4 justify-content-center">
+
+            @if (!User.Identity?.IsAuthenticated == true)
+            {
+                <div class="col-md-4">
+                    <div class="card feature-card text-center p-4">
+                        <div class="card-body">
+                            <h1 class="feature-icon">📅</h1>
+                            <h4 class="card-title fw-bold">Book Appointments</h4>
+                            <p class="card-text text-muted">A clear, calendar-based interface for easy booking and cancellations.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card feature-card text-center p-4">
+                        <div class="card-body">
+                            <h1 class="feature-icon">🩺</h1>
+                            <h4 class="card-title fw-bold">Meet Top Doctors</h4>
+                            <p class="card-text text-muted">View doctor specialties, their working hours, and their live availability.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card feature-card text-center p-4">
+                        <div class="card-body">
+                            <h1 class="feature-icon">📂</h1>
+                            <h4 class="card-title fw-bold">Secure Records</h4>
+                            <p class="card-text text-muted">Role-based access secures private patient notes exclusively for the doctor.</p>
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <!-- If Admin -->
+                @if (User.IsInRole("Admin"))
+                {
+                    <div class="col-md-4">
+                        <div class="card feature-card text-center p-4">
+                            <div class="card-body">
+                                <h1 class="feature-icon">📊</h1>
+                                <h4 class="card-title fw-bold">Admin Dashboard</h4>
+                                <p class="card-text text-muted">Monitor clinic statistics and view recent activities.</p>
+                                <a asp-controller="Admin" asp-action="Dashboard" class="btn btn-primary btn-rounded mt-3 w-100">View Statistics</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card feature-card text-center p-4">
+                            <div class="card-body">
+                                <h1 class="feature-icon">👨‍⚕️</h1>
+                                <h4 class="card-title fw-bold">Doctor Directory</h4>
+                                <p class="card-text text-muted">Add, remove, or update staff parameters.</p>
+                                <a asp-controller="Doctors" asp-action="Index" class="btn btn-outline-primary btn-rounded mt-3 w-100">Manage Doctors</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card feature-card text-center p-4">
+                            <div class="card-body">
+                                <h1 class="feature-icon">📁</h1>
+                                <h4 class="card-title fw-bold">Global Records</h4>
+                                <p class="card-text text-muted">Maintain the overarching registry of patients and past appointments.</p>
+                                <a asp-controller="Records" asp-action="Index" class="btn btn-outline-primary btn-rounded mt-3 w-100">Browse Records</a>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                <!-- Standard Patient / Doctor Links -->
+                <div class="col-md-4">
+                    <div class="card feature-card text-center p-4 border-primary border-top border-5">
+                        <div class="card-body">
+                            <h1 class="feature-icon">📅</h1>
+                            <h4 class="card-title fw-bold">Your Schedule</h4>
+                            <p class="card-text text-muted">Check your live timeline and interactive calendar view.</p>
+                            <a asp-controller="Appointments" asp-action="Index" class="btn btn-primary btn-rounded mt-3 w-100">Go to Calendar</a>
+                        </div>
+                    </div>
+                </div>
+
+                @if (!User.IsInRole("Admin"))
+                {
+                    <div class="col-md-4">
+                        <div class="card feature-card text-center p-4">
+                            <div class="card-body">
+                                <h1 class="feature-icon">🩺</h1>
+                                <h4 class="card-title fw-bold">New Booking</h4>
+                                <p class="card-text text-muted">Need a consultation? Book an opening right away.</p>
+                                <a asp-controller="Appointments" asp-action="Create" class="btn btn-outline-primary btn-rounded mt-3 w-100">Book Appointment</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card feature-card text-center p-4">
+                            <div class="card-body">
+                                <h1 class="feature-icon">📂</h1>
+                                <h4 class="card-title fw-bold">Medical History</h4>
+                                <p class="card-text text-muted">Keep track of your visit notes and documentation.</p>
+                                <a asp-controller="Records" asp-action="Index" class="btn btn-outline-primary btn-rounded mt-3 w-100">View History</a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>

@@ -1,0 +1,131 @@
+@model IEnumerable<ClinicAppointmentSystem.Models.Appointment>
+
+@{
+    ViewData["Title"] = "Appointments";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Appointments</h2>
+    <a asp-action="Create" class="btn btn-primary">Book New Appointment</a>
+</div>
+
+<ul class="nav nav-tabs mb-3" id="appointmentTab" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="list-tab" data-bs-toggle="tab" data-bs-target="#list" type="button" role="tab" aria-controls="list" aria-selected="true">List View</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="calendar-tab" data-bs-toggle="tab" data-bs-target="#calendar-view" type="button" role="tab" aria-controls="calendar-view" aria-selected="false">Calendar View</button>
+    </li>
+</ul>
+
+<div class="tab-content" id="appointmentTabContent">
+    <div class="tab-pane fade show active" id="list" role="tabpanel" aria-labelledby="list-tab">
+        <table class="table table-hover shadow-sm rounded border">
+            <thead class="bg-light">
+                <tr>
+                    <th>@Html.DisplayNameFor(model => model.Date)</th>
+                    <th>@Html.DisplayNameFor(model => model.Time)</th>
+                    <th>Patient</th>
+                    <th>Doctor</th>
+                    <th>@Html.DisplayNameFor(model => model.Status)</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+        @foreach (var item in Model) {
+                <tr>
+                    <td>@item.Date.ToShortDateString()</td>
+                    <td>@item.Time</td>
+                    <td>@(item.Patient?.Name)</td>
+                    <td>@(item.Doctor?.Name)</td>
+                    <td>
+                        <span class="badge @(item.Status == "Pending" ? "bg-warning" : item.Status == "Approved" ? "bg-success" : item.Status == "Cancelled" ? "bg-danger" : "bg-primary")">
+                            @item.Status
+                        </span>
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Cancel/Delete</a>
+                    </td>
+                </tr>
+        }
+            </tbody>
+        </table>
+    </div>
+    <div class="tab-pane fade" id="calendar-view" role="tabpanel" aria-labelledby="calendar-tab">
+        <div id="calendar" class="shadow-sm p-3 mb-5 bg-white rounded border"></div>
+    </div>
+</div>
+
+<div class="toast-container position-fixed bottom-0 end-0 p-3" id="toastPlacement">
+  <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast-header bg-info text-white">
+      <strong class="me-auto">Notification</strong>
+      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+    <div class="toast-body" id="toastMessage">
+      A scheduled appointment was updated.
+    </div>
+  </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+            var events = [
+                @foreach (var item in Model)
+                {
+                    <text>
+                    {
+                        title: '@(item.Patient?.Name ?? "Appt") with @(item.Doctor?.Name ?? "Doc")',
+                        start: '@item.Date.ToString("yyyy-MM-dd")T@(item.Time)',
+                        url: '/Appointments/Edit/@item.Id',
+                        color: '@(item.Status == "Cancelled" ? "red" : item.Status == "Pending" ? "orange" : "blue")'
+                    },
+                    </text>
+                }
+            ];
+
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                events: events
+            });
+            calendar.render();
+
+            $('button[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
+                if (e.target.id === 'calendar-tab') {
+                    calendar.render();
+                }
+            });
+
+            // SignalR implementation
+            const connection = new signalR.HubConnectionBuilder()
+                .withUrl("/appointmentHub")
+                .build();
+
+            connection.on("ReceiveAppointmentUpdate", function (message) {
+                document.getElementById('toastMessage').innerText = message;
+                var toastEl = document.getElementById('liveToast');
+                var toast = new bootstrap.Toast(toastEl);
+                toast.show();
+
+                // Reload page after 3 seconds to see changes
+                setTimeout(() => location.reload(), 3000);
+            });
+
+            connection.start().catch(function (err) {
+                return console.error(err.toString());
+            });
+        });
+    </script>
+}

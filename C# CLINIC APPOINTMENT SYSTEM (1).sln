@@ -1,0 +1,29 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "# CLINIC APPOINTMENT SYSTEM", "# CLINIC APPOINTMENT SYSTEM", "{410FCA56-C417-566D-00C4-3562A2244130}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClinicAppointmentSystem", "# CLINIC APPOINTMENT SYSTEM\ClinicAppointmentSystem.csproj", "{6A883066-90AA-2380-2B1E-C8655F2E9F24}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6A883066-90AA-2380-2B1E-C8655F2E9F24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6A883066-90AA-2380-2B1E-C8655F2E9F24}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6A883066-90AA-2380-2B1E-C8655F2E9F24}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6A883066-90AA-2380-2B1E-C8655F2E9F24}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{6A883066-90AA-2380-2B1E-C8655F2E9F24} = {410FCA56-C417-566D-00C4-3562A2244130}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3FB6292A-7D38-4FCE-9D11-87301F016948}
+	EndGlobalSection
+EndGlobal
