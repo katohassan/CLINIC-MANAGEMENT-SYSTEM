@@ -1,0 +1,74 @@
+@model IEnumerable<ClinicAppointmentSystem.Models.AuditLog>
+
+@{
+    ViewData["Title"] = "System Audit Logs";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>System Audit Logs</h2>
+        <span class="badge bg-primary">Top 100 Recent Actions</span>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <form asp-action="Index" method="get" class="row g-3">
+                <div class="col-md-5">
+                    <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" class="form-control" placeholder="Search by Table Name, User ID, or Primary Key..." />
+                </div>
+                <div class="col-md-4">
+                    <select name="typeFilter" class="form-select">
+                        <option value="">All Action Types</option>
+                        <option value="Create" selected="@(ViewData["TypeFilter"]?.ToString() == "Create")">Create</option>
+                        <option value="Update" selected="@(ViewData["TypeFilter"]?.ToString() == "Update")">Update</option>
+                        <option value="Delete" selected="@(ViewData["TypeFilter"]?.ToString() == "Delete")">Delete</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-primary w-100">Filter Logs</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="table-responsive shadow-sm rounded">
+        <table class="table table-hover table-striped align-middle mb-0">
+            <thead class="table-dark">
+                <tr>
+                    <th>Timestamp</th>
+                    <th>Action</th>
+                    <th>Table Name</th>
+                    <th>User ID</th>
+                    <th>Primary Key</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.DateTime.ToString("g")</td>
+                        <td>
+                            @if(item.Type == "Create") { <span class="badge bg-success">Create</span> }
+                            else if(item.Type == "Update") { <span class="badge bg-warning text-dark">Update</span> }
+                            else if(item.Type == "Delete") { <span class="badge bg-danger">Delete</span> }
+                            else { <span class="badge bg-secondary">@item.Type</span> }
+                        </td>
+                        <td class="fw-bold">@item.TableName</td>
+                        <td class="text-truncate" style="max-width: 150px;" title="@item.UserId">@item.UserId</td>
+                        <td>@item.PrimaryKey</td>
+                        <td>
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-info">View Details</a>
+                        </td>
+                    </tr>
+                }
+                @if(!Model.Any())
+                {
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-4">No audit logs found matching your criteria.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

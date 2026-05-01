@@ -1,0 +1,82 @@
+@model ClinicAppointmentSystem.Models.AuditLog
+
+@{
+    ViewData["Title"] = "Audit Log Details";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Audit Log Record #@Model.Id</h2>
+        <a asp-action="Index" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back to Logs</a>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0">Record Overview</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-4">Action Type</dt>
+                        <dd class="col-sm-8">
+                            @if(Model.Type == "Create") { <span class="badge bg-success">Create</span> }
+                            else if(Model.Type == "Update") { <span class="badge bg-warning text-dark">Update</span> }
+                            else if(Model.Type == "Delete") { <span class="badge bg-danger">Delete</span> }
+                            else { <span class="badge bg-secondary">@Model.Type</span> }
+                        </dd>
+
+                        <dt class="col-sm-4">Timestamp</dt>
+                        <dd class="col-sm-8">@Model.DateTime.ToString("f")</dd>
+
+                        <dt class="col-sm-4">User ID</dt>
+                        <dd class="col-sm-8">@Model.UserId</dd>
+
+                        <dt class="col-sm-4">Table Name</dt>
+                        <dd class="col-sm-8 fw-bold text-primary">@Model.TableName</dd>
+
+                        <dt class="col-sm-4">Primary Key</dt>
+                        <dd class="col-sm-8"><code>@Model.PrimaryKey</code></dd>
+
+                        <dt class="col-sm-4">Affected Columns</dt>
+                        <dd class="col-sm-8">@Model.AffectedColumns</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card shadow-sm mb-4 border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0">Old Values</h5>
+                </div>
+                <div class="card-body bg-light">
+                    @if (string.IsNullOrEmpty(Model.OldValues) || Model.OldValues == "{}")
+                    {
+                        <p class="text-muted mb-0"><em>No old values recorded.</em></p>
+                    }
+                    else
+                    {
+                        <pre class="mb-0" style="white-space: pre-wrap; word-wrap: break-word;">@Model.OldValues</pre>
+                    }
+                </div>
+            </div>
+
+            <div class="card shadow-sm mb-4 border-success">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">New Values</h5>
+                </div>
+                <div class="card-body bg-light">
+                    @if (string.IsNullOrEmpty(Model.NewValues) || Model.NewValues == "{}")
+                    {
+                        <p class="text-muted mb-0"><em>No new values recorded.</em></p>
+                    }
+                    else
+                    {
+                        <pre class="mb-0" style="white-space: pre-wrap; word-wrap: break-word;">@Model.NewValues</pre>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
