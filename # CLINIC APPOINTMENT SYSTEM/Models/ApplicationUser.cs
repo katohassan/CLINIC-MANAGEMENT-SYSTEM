@@ -15,4 +15,6 @@ public class ApplicationUser : IdentityUser
 
     [EmailAddress]
     public string? RecoveryEmail { get; set; }
+
+    public string? Bio { get; set; }
 }

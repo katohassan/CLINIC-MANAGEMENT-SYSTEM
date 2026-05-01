@@ -63,11 +63,14 @@ public class AccountController : Controller
             }
             */
 
+            // Approval check removed for ease of access
+            /*
             if (!user.IsApproved)
             {
                 ModelState.AddModelError(string.Empty, "Your account is pending admin approval or has been revoked. You cannot access the system.");
                 return View(model);
             }
+            */
 
             var result = await _signInManager.PasswordSignInAsync(
                 model.Email, 
