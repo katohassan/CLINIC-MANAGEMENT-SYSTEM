@@ -22,6 +22,7 @@ public class ApplicationDbContext : IdentityDbContext
     public DbSet<ClinicAppointmentSystem.Models.ClinicService> ClinicServices { get; set; } = default!;
     public DbSet<ClinicAppointmentSystem.Models.Bill> Bills { get; set; } = default!;
     public DbSet<ClinicAppointmentSystem.Models.AuditLog> AuditLogs { get; set; } = default!;
+    public DbSet<ClinicAppointmentSystem.Models.DoctorAvailability> DoctorAvailabilities { get; set; } = default!;
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {

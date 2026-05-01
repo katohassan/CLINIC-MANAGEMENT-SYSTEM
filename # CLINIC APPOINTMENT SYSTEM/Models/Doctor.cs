@@ -19,5 +19,6 @@ namespace ClinicAppointmentSystem.Models
 
         public ICollection<Appointment>? Appointments { get; set; }
         public ICollection<Record>? Records { get; set; }
+        public ICollection<DoctorAvailability>? Availabilities { get; set; }
     }
 }
