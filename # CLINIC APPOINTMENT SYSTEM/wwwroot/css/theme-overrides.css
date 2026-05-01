@@ -1,0 +1,41 @@
+/* Theme overrides to replace remaining explicit blue colors with primary green */
+:root {
+  --primary-color: #11998e;
+  --primary-contrast: #ffffff;
+}
+
+/* Links */
+a, a:hover, a:focus {
+  color: var(--primary-color) !important; /* Consistent primary color usage */
+}
+
+/* Bootstrap primary variants */
+.text-primary { color: var(--primary-color) !important; }
+.bg-primary { background-color: var(--primary-color) !important; }
+
+.btn-primary {
+  background-color: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
+}
+.btn-primary:hover, .btn-primary:focus {
+  background-color: #0ea07a !important;
+  border-color: #0ea07a !important;
+}
+
+.navbar, .healthcare-navbar {
+  background-color: var(--primary-color) !important;
+}
+
+/* Tables, badges, text accents */
+.table thead th { color: var(--text-muted); }
+.badge-primary { background-color: var(--primary-color) !important; }
+
+/* Forms focus ring override */
+.form-control:focus, .btn:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem rgba(17,153,142,0.25) !important;
+}
+
+/* Generic replace for elements that may have been styled directly with "blue" word */
+[style*="blue"] {
+  /* if inline style contained 'blue' this won't rewrite it, but this selector flags elements */
+}

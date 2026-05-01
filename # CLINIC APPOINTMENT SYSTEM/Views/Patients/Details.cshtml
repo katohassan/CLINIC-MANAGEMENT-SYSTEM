@@ -1,0 +1,41 @@
+@model ClinicAppointmentSystem.Models.Patient
+
+@{
+    ViewData["Title"] = "Patient Details";
+}
+
+<h2>Patient Details</h2>
+<hr />
+<dl class="row">
+    <dt class="col-sm-3">Full Name</dt>
+    <dd class="col-sm-9">@Model.FullName</dd>
+
+    <dt class="col-sm-3">Date of Birth</dt>
+    <dd class="col-sm-9">@Model.DateOfBirth.ToShortDateString()</dd>
+
+    <dt class="col-sm-3">Gender</dt>
+    <dd class="col-sm-9">@Model.Gender</dd>
+
+    <dt class="col-sm-3">Primary Phone</dt>
+    <dd class="col-sm-9">@Model.PrimaryPhone</dd>
+
+    <dt class="col-sm-3">Email</dt>
+    <dd class="col-sm-9">@Model.Email</dd>
+
+    <dt class="col-sm-3">Address</dt>
+    <dd class="col-sm-9">@Model.Address</dd>
+
+    <dt class="col-sm-3">Allergies</dt>
+    <dd class="col-sm-9">@Model.Allergies</dd>
+
+    <dt class="col-sm-3">Chronic Conditions</dt>
+    <dd class="col-sm-9">@Model.ChronicConditions</dd>
+
+    <dt class="col-sm-3">Current Medications</dt>
+    <dd class="col-sm-9">@Model.CurrentMedications</dd>
+</dl>
+
+<p>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+</p>

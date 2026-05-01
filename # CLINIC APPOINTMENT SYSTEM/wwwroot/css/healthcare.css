@@ -1,13 +1,23 @@
 :root {
-    --primary-color: #11998e; /* Primary Green */
-    --secondary-color: #38ef7d; /* Lighter Green */
-    --accent-color: #00bfa5; /* Teal for health/action */
-    --bg-color: #f4f7f6;
+    /* Primary palette */
+    --primary-color: #11998e; /* main brand green */
+    --primary-700: #0e8a76;   /* darker */
+    --primary-300: #38ef7d;   /* lighter accent */
+    --accent-color: #00bfa5;  /* complementary teal */
+
+    /* Greys & backgrounds */
+    --bg-color: #f6fbf9;      /* very light green/white */
     --sidebar-bg: #ffffff;
-    --text-main: #333333;
-    --text-muted: #6c757d;
-    --card-shadow: 0 4px 6px rgba(0,0,0,0.05);
-    --hover-shadow: 0 10px 20px rgba(0,0,0,0.08);
+    --card-bg: #ffffff;
+    --text-main: #0f1720;     /* dark slate for readability */
+    --text-muted: #6b7280;
+
+    /* Shadows */
+    --card-shadow: 0 6px 16px rgba(15,25,30,0.06);
+    --hover-shadow: 0 12px 30px rgba(15,25,30,0.08);
+
+    /* Bootstrap integration */
+    --bs-primary: var(--primary-color);
 }
 
 body {
@@ -15,26 +25,28 @@ body {
     background-color: var(--bg-color);
     color: var(--text-main);
     overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 /* Navbar */
 .healthcare-navbar {
-    background-color: var(--primary-color) !important;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    padding: 10px 20px;
+    background: linear-gradient(90deg, var(--primary-color), var(--primary-700));
+    box-shadow: 0 6px 20px rgba(15,25,30,0.06);
+    padding: 12px 20px;
 }
 .healthcare-navbar .navbar-brand {
-    color: #ffffff !important;
+    color: var(--primary-contrast, #ffffff) !important;
     font-weight: 700;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.4px;
 }
 .healthcare-navbar .nav-link {
-    color: rgba(255,255,255,0.85) !important;
+    color: rgba(255,255,255,0.95) !important;
     font-weight: 500;
-    transition: color 0.3s;
+    transition: color 0.2s ease-in-out;
 }
 .healthcare-navbar .nav-link:hover {
-    color: #ffffff !important;
+    color: rgba(255,255,255,1) !important;
 }
 
 /* Sidebar Dashboard Layout */
@@ -48,35 +60,35 @@ body {
     max-width: 250px;
     background: var(--sidebar-bg);
     min-height: calc(100vh - 60px);
-    box-shadow: 2px 0 5px rgba(0,0,0,0.05);
-    transition: all 0.3s;
+    box-shadow: 2px 0 10px rgba(15,25,30,0.04);
+    transition: all 0.25s ease;
 }
 .sidebar .sidebar-header {
     padding: 20px;
-    background: var(--sidebar-bg);
-    border-bottom: 1px solid #eee;
+    background: linear-gradient(90deg, rgba(17,153,142,0.06), rgba(56,239,125,0.02));
+    border-bottom: 1px solid rgba(0,0,0,0.04);
 }
 .sidebar ul p {
     color: var(--text-muted);
     padding: 10px;
 }
 .sidebar ul li a {
-    padding: 15px 20px;
-    font-size: 1.05em;
+    padding: 14px 20px;
+    font-size: 1.02rem;
     display: block;
     color: var(--text-main);
     text-decoration: none;
-    transition: all 0.3s;
+    transition: all 0.18s ease;
     border-left: 4px solid transparent;
 }
 .sidebar ul li a:hover, .sidebar ul li.active > a {
-    color: var(--primary-color);
-    background: #f8f9fa;
-    border-left: 4px solid var(--accent-color);
+    color: var(--primary-700);
+    background: rgba(17,153,142,0.04);
+    border-left: 4px solid var(--primary-color);
 }
 .sidebar ul li a i {
     margin-right: 10px;
-    color: var(--secondary-color);
+    color: var(--primary-300);
 }
 
 /* Content Area */
@@ -90,28 +102,30 @@ body {
 .card {
     border: none;
     border-radius: 12px;
+    background: var(--card-bg);
     box-shadow: var(--card-shadow);
-    transition: transform 0.3s, box-shadow 0.3s;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 .card:hover {
     box-shadow: var(--hover-shadow);
-    transform: translateY(-3px);
+    transform: translateY(-4px);
 }
 .card-header {
     background-color: transparent;
-    border-bottom: 1px solid rgba(0,0,0,0.05);
+    border-bottom: 1px solid rgba(0,0,0,0.04);
     font-weight: 600;
-    color: var(--primary-color);
+    color: var(--primary-700);
 }
 
 /* Buttons */
 .btn-primary {
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
+    background: linear-gradient(90deg, var(--primary-color), var(--primary-700));
+    border-color: var(--primary-700);
+    color: #fff;
 }
 .btn-primary:hover {
-    background-color: var(--secondary-color);
-    border-color: var(--secondary-color);
+    background: linear-gradient(90deg, var(--primary-700), var(--primary-color));
+    border-color: var(--primary-700);
 }
 .btn-accent {
     background-color: var(--accent-color);
@@ -152,16 +166,22 @@ body {
     padding: 10px 15px;
 }
 .form-control:focus {
-    border-color: var(--secondary-color);
-    box-shadow: 0 0 0 0.2rem rgba(25, 118, 210, 0.25);
+    border-color: var(--primary-700);
+    box-shadow: 0 0 0 0.2rem rgba(17,153,142,0.12);
 }
 
 /* Hero Section */
 .hero-hospital {
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-300) 100%);
     color: white;
     padding: 60px 40px;
     border-radius: 16px;
     margin-bottom: 30px;
-    box-shadow: 0 10px 30px rgba(17,153,142,0.2);
+    box-shadow: 0 14px 40px rgba(15,25,30,0.06);
+}
+
+/* Footer */
+.footer {
+    background: #ffffff;
+    color: var(--text-muted);
 }

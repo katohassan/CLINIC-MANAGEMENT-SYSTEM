@@ -1,0 +1,35 @@
+@model ClinicAppointmentSystem.Models.Doctor
+
+@{
+    ViewData["Title"] = "Doctor Details";
+}
+
+<h2>Doctor Details</h2>
+<hr />
+<dl class="row">
+    <dt class="col-sm-3">Full Name</dt>
+    <dd class="col-sm-9">@Model.FullName</dd>
+
+    <dt class="col-sm-3">Doctor ID</dt>
+    <dd class="col-sm-9">@Model.DoctorId</dd>
+
+    <dt class="col-sm-3">Specialty</dt>
+    <dd class="col-sm-9">@Model.Specialty</dd>
+
+    <dt class="col-sm-3">Qualifications</dt>
+    <dd class="col-sm-9">@Model.Qualifications</dd>
+
+    <dt class="col-sm-3">Department</dt>
+    <dd class="col-sm-9">@Model.Department</dd>
+
+    <dt class="col-sm-3">Contact</dt>
+    <dd class="col-sm-9">@Model.Contact</dd>
+
+    <dt class="col-sm-3">Consultation Hours</dt>
+    <dd class="col-sm-9">@Model.ConsultationHours</dd>
+</dl>
+
+<p>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+</p>
