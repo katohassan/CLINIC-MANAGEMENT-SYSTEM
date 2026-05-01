@@ -14,8 +14,10 @@
             <table class="table table-striped table-hover datatable align-middle">
                 <thead class="bg-light">
                     <tr>
-                        <th class="ps-3">Email Address</th>
+                        <th class="ps-3">Full Name</th>
+                        <th>Email Address</th>
                         <th>Assigned Roles</th>
+                        <th>Status</th>
                         <th class="text-end pe-3">Actions</th>
                     </tr>
                 </thead>
@@ -23,7 +25,8 @@
                     @foreach (var user in Model)
                     {
                         <tr>
-                            <td class="ps-3 fw-bold">@user.Email</td>
+                            <td class="ps-3 fw-bold">@(string.IsNullOrEmpty(user.FullName) ? user.UserName : user.FullName)</td>
+                            <td>@user.Email</td>
                             <td>
                                 @if (user.Roles.Any())
                                 {
@@ -39,10 +42,37 @@
                                     <span class="badge rounded-pill bg-secondary px-3">Unassigned Client</span>
                                 }
                             </td>
+                            <td>
+                                @if (user.IsApproved)
+                                {
+                                    <span class="badge bg-success rounded-pill px-3">Approved</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-warning text-dark rounded-pill px-3">Pending / Revoked</span>
+                                }
+                            </td>
                             <td class="text-end pe-3">
-                                <a asp-action="Manage" asp-route-userId="@user.UserId" class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-bold shadow-sm">
-                                    <i class="fa-solid fa-user-pen"></i> Promulgate Role
-                                </a>
+                                <div class="d-flex justify-content-end gap-2">
+                                    <form asp-action="ToggleApproval" method="post" style="display:inline;">
+                                        <input type="hidden" name="userId" value="@user.UserId" />
+                                        @if (user.IsApproved)
+                                        {
+                                            <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill px-3 fw-bold shadow-sm">
+                                                <i class="fa-solid fa-ban"></i> Revoke
+                                            </button>
+                                        }
+                                        else
+                                        {
+                                            <button type="submit" class="btn btn-sm btn-outline-success rounded-pill px-3 fw-bold shadow-sm">
+                                                <i class="fa-solid fa-check"></i> Approve
+                                            </button>
+                                        }
+                                    </form>
+                                    <a asp-action="Manage" asp-route-userId="@user.UserId" class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-bold shadow-sm">
+                                        <i class="fa-solid fa-user-pen"></i> Manage Roles
+                                    </a>
+                                </div>
                             </td>
                         </tr>
                     }

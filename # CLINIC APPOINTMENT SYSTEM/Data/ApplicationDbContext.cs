@@ -5,7 +5,7 @@ using System.Security.Claims;
 
 namespace ClinicAppointmentSystem.Data;
 
-public class ApplicationDbContext : IdentityDbContext
+public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 {
     private readonly IHttpContextAccessor? _httpContextAccessor;
 
@@ -17,6 +17,9 @@ public class ApplicationDbContext : IdentityDbContext
 
     public DbSet<ClinicAppointmentSystem.Models.Patient> Patients { get; set; } = default!;
     public DbSet<ClinicAppointmentSystem.Models.Doctor> Doctors { get; set; } = default!;
+    public DbSet<ClinicAppointmentSystem.Models.Staff> Staff { get; set; } = default!;
+    public DbSet<ClinicAppointmentSystem.Models.EmergencyContact> EmergencyContacts { get; set; } = default!;
+    public DbSet<ClinicAppointmentSystem.Models.AppointmentPreference> AppointmentPreferences { get; set; } = default!;
     public DbSet<ClinicAppointmentSystem.Models.Appointment> Appointments { get; set; } = default!;
     public DbSet<ClinicAppointmentSystem.Models.Record> Records { get; set; } = default!;
     public DbSet<ClinicAppointmentSystem.Models.ClinicService> ClinicServices { get; set; } = default!;
@@ -104,5 +107,31 @@ public class ApplicationDbContext : IdentityDbContext
         {
             AuditLogs.Add(auditEntry.ToAuditLog());
         }
+    }
+
+    protected override void OnModelCreating(Microsoft.EntityFrameworkCore.ModelBuilder builder)
+    {
+        base.OnModelCreating(builder);
+
+        // Configure one-to-one between Patient and EmergencyContact where Patient holds the FK
+        builder.Entity<Patient>()
+            .HasOne(p => p.EmergencyContact)
+            .WithOne(ec => ec.Patient)
+            .HasForeignKey<Patient>(p => p.EmergencyContactId)
+            .OnDelete(Microsoft.EntityFrameworkCore.DeleteBehavior.SetNull);
+
+        // Patient preferred doctor (many-to-one)
+        builder.Entity<Patient>()
+            .HasOne(p => p.PreferredDoctor)
+            .WithMany(d => d.AssignedPatients)
+            .HasForeignKey(p => p.PreferredDoctorId)
+            .OnDelete(Microsoft.EntityFrameworkCore.DeleteBehavior.SetNull);
+
+        // AppointmentPreferences relationship
+        builder.Entity<AppointmentPreference>()
+            .HasOne(ap => ap.Patient)
+            .WithMany(p => p.AppointmentPreferences)
+            .HasForeignKey(ap => ap.PatientId)
+            .OnDelete(Microsoft.EntityFrameworkCore.DeleteBehavior.Cascade);
     }
 }

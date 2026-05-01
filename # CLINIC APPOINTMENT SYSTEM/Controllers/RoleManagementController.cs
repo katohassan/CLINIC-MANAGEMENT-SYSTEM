@@ -12,10 +12,10 @@ namespace ClinicAppointmentSystem.Controllers
     [Authorize(Roles = "Admin")]
     public class RoleManagementController : Controller
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
 
-        public RoleManagementController(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
+        public RoleManagementController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _roleManager = roleManager;
@@ -32,8 +32,10 @@ namespace ClinicAppointmentSystem.Controllers
                 var thisViewModel = new UserRolesViewModel
                 {
                     UserId = user.Id,
+                    FullName = user.FullName,
                     Email = user.Email ?? string.Empty,
                     UserName = user.UserName ?? string.Empty,
+                    IsApproved = user.IsApproved,
                     Roles = await _userManager.GetRolesAsync(user)
                 };
                 userRolesViewModel.Add(thisViewModel);
@@ -108,6 +110,22 @@ namespace ClinicAppointmentSystem.Controllers
             }
 
             return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ToggleApproval(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            user.IsApproved = !user.IsApproved;
+            await _userManager.UpdateAsync(user);
+
+            return RedirectToAction(nameof(Index));
         }
     }
 }

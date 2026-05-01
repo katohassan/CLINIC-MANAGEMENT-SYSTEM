@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace ClinicAppointmentSystem.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Doctor")]
     public class DoctorsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -24,7 +24,7 @@ namespace ClinicAppointmentSystem.Controllers
         // GET: Doctors
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Doctors.ToListAsync());
+            return View(await _context.Doctors.Include(d => d.AssignedPatients).ToListAsync());
         }
 
         // GET: Doctors/Create
@@ -35,10 +35,12 @@ namespace ClinicAppointmentSystem.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Specialty,Contact")] Doctor doctor)
+        public async Task<IActionResult> Create(Doctor doctor)
         {
             if (ModelState.IsValid)
             {
+                // ensure doctor has a DoctorId
+                if (string.IsNullOrWhiteSpace(doctor.DoctorId)) doctor.DoctorId = $"DR-{Guid.NewGuid().ToString().Substring(0,8).ToUpper()}";
                 _context.Add(doctor);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -58,7 +60,7 @@ namespace ClinicAppointmentSystem.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Specialty,Contact,UserId")] Doctor doctor)
+        public async Task<IActionResult> Edit(int id, Doctor doctor)
         {
             if (id != doctor.Id) return NotFound();
 

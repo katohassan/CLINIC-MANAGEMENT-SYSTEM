@@ -42,4 +42,17 @@ public class RegisterViewModel
     [DataType(DataType.MultilineText)]
     [Display(Name = "Bio / Medical History")]
     public string? Bio { get; set; }
+
+    [Required]
+    [Display(Name = "Register As")]
+    public string RoleRequested { get; set; } = "Patient"; // Options: Patient, Doctor, Staff
+
+    [Display(Name = "Medical Specialty")]
+    public string? Specialty { get; set; } // Required if RoleRequested is "Doctor"
+
+    [Display(Name = "Qualification / Title")]
+    public string? Qualification { get; set; }
+
+    [Display(Name = "License / Registration Number")]
+    public string? LicenseNumber { get; set; }
 }

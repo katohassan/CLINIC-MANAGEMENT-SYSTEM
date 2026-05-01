@@ -2,146 +2,471 @@
 
 @{
     ViewData["Title"] = "Patient Registration";
+    Layout = null;
 }
 
-<style>
-    body {
-        /* Beautiful vibrant background for registration */
-        background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
-        min-height: 100vh;
-    }
-    
-    .registration-container {
-        padding: 50px 15px;
-    }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Clinic Appointment System</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    .glass-card {
-        background: rgba(255, 255, 255, 0.4);
-        backdrop-filter: blur(15px);
-        -webkit-backdrop-filter: blur(15px);
-        border: 1px solid rgba(255, 255, 255, 0.6);
-        border-radius: 20px;
-        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
-        max-width: 700px;
-        width: 100%;
-        animation: fadeIn 0.8s ease-out;
-    }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
 
-    @@keyframes fadeIn {
-        from { opacity: 0; transform: translateY(-20px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
+        .registration-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
 
-    .text-gradient {
-        background: linear-gradient(45deg, #1d2b64, #f8cdda);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+            overflow: hidden;
+            animation: fadeIn 0.6s ease-out;
+        }
 
-    .glass-input {
-        background: rgba(255, 255, 255, 0.6) !important;
-        border: 1px solid rgba(255, 255, 255, 0.8) !important;
-        border-radius: 10px;
-        transition: all 0.3s ease;
-    }
+        @@keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-    .glass-input:focus {
-        background: rgba(255, 255, 255, 0.9) !important;
-        box-shadow: 0 0 10px rgba(142, 197, 252, 0.5) !important;
-        border-color: #8ec5fc !important;
-    }
+        .card-header-section {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            padding: 40px;
+            color: white;
+            text-align: center;
+        }
 
-    .glass-btn {
-        background: linear-gradient(45deg, #8ec5fc, #e0c3fc) !important;
-        border: none;
-        color: #fff;
-        transition: all 0.3s ease;
-    }
+        .header-icon {
+            width: 70px;
+            height: 70px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            margin: 0 auto 20px;
+            backdrop-filter: blur(10px);
+        }
 
-    .glass-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(142, 197, 252, 0.6) !important;
-    }
-</style>
+        .card-header-section h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
 
-<div class="registration-container d-flex justify-content-center align-items-center">
-    <div class="glass-card p-4 p-md-5">
-        <div class="text-center mb-4">
-            <h2 class="fw-bold text-gradient">Create Account</h2>
-            <p class="text-dark">Register as a patient to book appointments & view your medical records.</p>
+        .card-header-section p {
+            opacity: 0.9;
+            font-size: 0.95rem;
+        }
+
+        .card-body-section {
+            padding: 40px;
+        }
+
+        .section-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #11998e;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title i {
+            margin-right: 10px;
+        }
+
+        .form-label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 0.95rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            background: #f9fafb;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #11998e;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(17, 153, 142, 0.1);
+        }
+
+        .input-group-text {
+            background: #f9fafb;
+            border: 2px solid #e5e7eb;
+            border-right: none;
+            border-radius: 10px 0 0 10px;
+            color: #9ca3af;
+        }
+
+        .input-group .form-control {
+            border-radius: 0 10px 10px 0;
+        }
+
+        .text-danger {
+            font-size: 0.8rem;
+            margin-top: 6px;
+            display: block;
+        }
+
+        .btn-register {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(17, 153, 142, 0.3);
+        }
+
+        .btn-register:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(17, 153, 142, 0.4);
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .login-link p {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .login-link a {
+            color: #11998e;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .login-link a:hover {
+            color: #0d7a6f;
+        }
+
+        .password-requirements {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 10px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        .password-requirements h6 {
+            color: #166534;
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 0.875rem;
+        }
+
+        .password-requirements ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .password-requirements li {
+            color: #15803d;
+            font-size: 0.8rem;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+        }
+
+        .password-requirements li::before {
+            content: '✓';
+            margin-right: 8px;
+            color: #22c55e;
+            font-weight: bold;
+        }
+
+        @@media (max-width: 768px) {
+            .card-body-section {
+                padding: 24px;
+            }
+            
+            .card-header-section {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="registration-container">
+        <div class="glass-card">
+            <div class="card-header-section">
+                <div class="header-icon">
+                    <i class="fas fa-user-plus"></i>
+                </div>
+                <h2>Create Your Account</h2>
+                <p>Register as a patient, doctor or staff member</p>
+            </div>
+
+            <div class="card-body-section">
+                <form asp-action="Register" method="post" id="registerForm">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3 fw-bold" style="background: #fef2f2; padding: 12px; border-radius: 8px; border: 1px solid #fecaca;"></div>
+
+                    <!-- Personal Information -->
+                    <h5 class="section-title"><i class="fas fa-user"></i> Personal Information</h5>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Name" class="form-label">Full Name</label>
+                            <input asp-for="Name" class="form-control" placeholder="e.g. John Doe" />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="DateOfBirth" class="form-label">Date of Birth</label>
+                            <input asp-for="DateOfBirth" class="form-control" type="date" />
+                            <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="RoleRequested" class="form-label">Register As</label>
+                            <select asp-for="RoleRequested" class="form-control" id="roleSelect" onchange="toggleSpecialty()">
+                                <option value="Patient">Patient</option>
+                                <option value="Doctor">Doctor</option>
+                                <option value="Staff">Staff</option>
+                            </select>
+                            <span asp-validation-for="RoleRequested" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3" id="specialtyContainer" style="display:none;">
+                            <label asp-for="Specialty" class="form-label">Medical Specialty</label>
+                            <input asp-for="Specialty" class="form-control" placeholder="e.g. Cardiology" />
+                            <span asp-validation-for="Specialty" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6 mb-3" id="qualificationContainer" style="display:none;">
+                            <label asp-for="Qualification" class="form-label">Qualification / Title</label>
+                            <input asp-for="Qualification" class="form-control" placeholder="e.g. MBBS, MD, RN" />
+                            <span asp-validation-for="Qualification" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3" id="licenseContainer" style="display:none;">
+                            <label asp-for="LicenseNumber" class="form-label">License / Registration Number</label>
+                            <input asp-for="LicenseNumber" class="form-control" placeholder="e.g. MED123456" />
+                            <span asp-validation-for="LicenseNumber" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <!-- Contact Information -->
+                    <h5 class="section-title mt-4"><i class="fas fa-address-book"></i> Contact Information</h5>
+
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label">Email Address</label>
+                        <div class="input-group">
+                            <span class="input-group-text">@@</span>
+                            <input asp-for="Email" class="form-control" placeholder="your.email@gmail.com" type="email" />
+                        </div>
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Contact" class="form-label">Phone Number</label>
+                            <input asp-for="Contact" class="form-control" placeholder="+1 234 567 890" />
+                            <span asp-validation-for="Contact" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Address" class="form-label">Home Address</label>
+                            <input asp-for="Address" class="form-control" placeholder="123 Health Ave" />
+                            <span asp-validation-for="Address" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Bio" class="form-label">Bio / Medical History (Optional)</label>
+                        <textarea asp-for="Bio" class="form-control" rows="3" placeholder="List any allergies, past surgeries, or ongoing issues..."></textarea>
+                        <span asp-validation-for="Bio" class="text-danger"></span>
+                    </div>
+
+                    <!-- Security -->
+                    <h5 class="section-title mt-4"><i class="fas fa-shield-alt"></i> Account Security</h5>
+
+                    <div class="password-requirements">
+                        <h6><i class="fas fa-info-circle me-2"></i>Password Requirements</h6>
+                        <ul>
+                            <li>At least 8 characters long</li>
+                            <li>Contains uppercase and lowercase letters</li>
+                            <li>Contains at least one number</li>
+                            <li>Contains at least one special character</li>
+                        </ul>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Password" class="form-label">Password</label>
+                            <input asp-for="Password" class="form-control" type="password" placeholder="Create a strong password" />
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="ConfirmPassword" class="form-label">Confirm Password</label>
+                            <input asp-for="ConfirmPassword" class="form-control" type="password" placeholder="Re-enter your password" />
+                            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="d-grid mt-4">
+                        <button id="submitBtn" type="submit" class="btn-register" disabled>
+                            <i class="fas fa-user-plus me-2"></i> Complete Registration
+                        </button>
+                    </div>
+
+                    <div class="login-link">
+                        <p>Already have an account? <a asp-controller="Account" asp-action="Login">Sign in here</a></p>
+                    </div>
+                </form>
+            </div>
         </div>
-
-        <form asp-action="Register" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger mb-3 fw-bold bg-white bg-opacity-75 p-2 rounded"></div>
-
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label asp-for="Name" class="form-label text-dark fw-bold">Full Name</label>
-                    <input asp-for="Name" class="form-control glass-input" placeholder="e.g. John Doe" />
-                    <span asp-validation-for="Name" class="text-danger small fw-bold"></span>
-                </div>
-                
-                <div class="col-md-6 mb-3">
-                    <label asp-for="DateOfBirth" class="form-label text-dark fw-bold">Date of Birth</label>
-                    <input asp-for="DateOfBirth" class="form-control glass-input" type="date" />
-                    <span asp-validation-for="DateOfBirth" class="text-danger small fw-bold"></span>
-                </div>
-            </div>
-
-            <div class="mb-3">
-                <label asp-for="Email" class="form-label text-dark fw-bold">Email Address</label>
-                <div class="input-group">
-                  <span class="input-group-text bg-transparent border-white">@@</span>
-                  <input asp-for="Email" class="form-control glass-input" placeholder="Valid channels (gmail.com, yahoo.com...)" type="email" />
-                </div>
-                <span asp-validation-for="Email" class="text-danger small fw-bold"></span>
-            </div>
-
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label asp-for="Contact" class="form-label text-dark fw-bold">Phone Number</label>
-                    <input asp-for="Contact" class="form-control glass-input" placeholder="+123456789" />
-                    <span asp-validation-for="Contact" class="text-danger small fw-bold"></span>
-                </div>
-
-                <div class="col-md-6 mb-3">
-                    <label asp-for="Address" class="form-label text-dark fw-bold">Home Address</label>
-                    <input asp-for="Address" class="form-control glass-input" placeholder="123 Health Ave" />
-                    <span asp-validation-for="Address" class="text-danger small fw-bold"></span>
-                </div>
-            </div>
-
-            <div class="mb-3">
-                <label asp-for="Bio" class="form-label text-dark fw-bold">Bio / Medical History (Optional)</label>
-                <textarea asp-for="Bio" class="form-control glass-input" rows="3" placeholder="List any allergies, past surgeries, or ongoing issues..."></textarea>
-                <span asp-validation-for="Bio" class="text-danger small fw-bold"></span>
-            </div>
-
-            <hr class="my-4 border-white" />
-
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label asp-for="Password" class="form-label text-dark fw-bold">Password</label>
-                    <input asp-for="Password" class="form-control glass-input" type="password" />
-                    <span asp-validation-for="Password" class="text-danger small fw-bold"></span>
-                </div>
-
-                <div class="col-md-6 mb-3">
-                    <label asp-for="ConfirmPassword" class="form-label text-dark fw-bold">Confirm Password</label>
-                    <input asp-for="ConfirmPassword" class="form-control glass-input" type="password" />
-                    <span asp-validation-for="ConfirmPassword" class="text-danger small fw-bold"></span>
-                </div>
-            </div>
-
-            <div class="d-grid mt-4">
-                <button type="submit" class="btn glass-btn rounded-pill fw-bold py-3 shadow">
-                    Complete Secure Registration
-                </button>
-            </div>
-        </form>
     </div>
-</div>
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+    <script>
+        function toggleSpecialty() {
+            var role = document.getElementById("roleSelect").value;
+            var container = document.getElementById("specialtyContainer");
+            var qual = document.getElementById("qualificationContainer");
+            var lic = document.getElementById("licenseContainer");
+            if (role === "Doctor") {
+                container.style.display = "block";
+                qual.style.display = "block";
+                lic.style.display = "block";
+            } else {
+                container.style.display = "none";
+                qual.style.display = "none";
+                lic.style.display = "none";
+            }
+        }
+        // Initialize on load
+        toggleSpecialty();
+        
+        // Client-side conditional validation for Qualification and LicenseNumber
+        $(function() {
+            function needsProfessional() {
+                var r = $('#roleSelect').val();
+                return r === 'Doctor' || r === 'Staff';
+            }
+
+            // Add custom rules
+            $('#registerForm').validate({
+                ignore: [], // ensure hidden fields are validated when shown
+                errorClass: 'text-danger',
+                errorElement: 'span',
+                rules: {
+                    Qualification: {
+                        required: function() { return needsProfessional(); }
+                    },
+                    LicenseNumber: {
+                        required: function() { return needsProfessional(); }
+                    }
+                },
+                messages: {
+                    Qualification: { required: 'Qualification is required for doctors and staff.' },
+                    LicenseNumber: { required: 'License/Registration number is required for doctors and staff.' }
+                }
+            });
+
+            // Re-validate when role changes
+            $('#roleSelect').on('change', function() {
+                toggleSpecialty();
+                $('#registerForm').valid();
+            });
+
+            // Password strength and enable/disable submit
+            function scorePassword(p) {
+                var score = 0;
+                if (!p) return score;
+                // length
+                if (p.length >= 8) score += 1;
+                if (p.length >= 12) score += 1;
+                // upper & lower
+                if (/[a-z]/.test(p) && /[A-Z]/.test(p)) score += 1;
+                // digits
+                if (/[0-9]/.test(p)) score += 1;
+                // special chars
+                if (/[^A-Za-z0-9]/.test(p)) score += 1;
+                return score; // 0-5
+            }
+
+            function updatePasswordUI() {
+                var pw = $('#Password').val() || '';
+                var s = scorePassword(pw);
+                var percent = Math.min(100, Math.round((s / 5) * 100));
+                var bar = $('#pwStrengthBar');
+                bar.css('width', percent + '%');
+                bar.removeClass('bg-danger bg-warning bg-success bg-info');
+                var text = 'Very weak';
+                if (s <= 1) { bar.addClass('bg-danger'); text = 'Very weak'; }
+                else if (s === 2) { bar.addClass('bg-warning'); text = 'Weak'; }
+                else if (s === 3) { bar.addClass('bg-info'); text = 'Moderate'; }
+                else if (s >= 4) { bar.addClass('bg-success'); text = 'Strong'; }
+                $('#pwStrengthText').text('Password strength: ' + text);
+            }
+
+            // Enable submit only when form is valid
+            function updateSubmitState() {
+                var valid = $('#registerForm').valid();
+                $('#submitBtn').prop('disabled', !valid);
+            }
+
+            // hook up events
+            $('#Password').on('input', function() { updatePasswordUI(); updateSubmitState(); });
+            $('#registerForm input, #registerForm select, #registerForm textarea').on('input change', function() { updateSubmitState(); });
+
+            // initial
+            updatePasswordUI();
+            updateSubmitState();
+        });
+    </script>
+    @section Scripts {
+        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    }
+</body>
+</html>

@@ -2,65 +2,93 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ClinicAppointmentSystem.Data;
 using ClinicAppointmentSystem.Hubs;
+using ClinicAppointmentSystem.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));
+    options.UseSqlite(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => 
+builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 {
     options.SignIn.RequireConfirmedAccount = false;
-    
-    // Password Security Settings
-    options.Password.RequireDigit = true;
-    options.Password.RequireLowercase = true;
-    options.Password.RequireNonAlphanumeric = true;
-    options.Password.RequireUppercase = true;
-    options.Password.RequiredLength = 8;
-    options.Password.RequiredUniqueChars = 1;
 
-    // Lockout Policies to prevent brute force/credential stuffing
-    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
-    options.Lockout.MaxFailedAccessAttempts = 5;
-    options.Lockout.AllowedForNewUsers = true;
+    // ==================== ENHANCED PASSWORD SECURITY ====================
+    options.Password.RequireDigit = true;              // Must contain at least one digit
+    options.Password.RequireLowercase = true;           // Must contain at least one lowercase
+    options.Password.RequireNonAlphanumeric = true;   // Must contain special character
+    options.Password.RequireUppercase = true;          // Must contain at least one uppercase
+    options.Password.RequiredLength = 8;              // Minimum 8 characters
+    options.Password.RequiredUniqueChars = 1;         // At least 1 unique character
 
-    // User Settings
-    options.User.RequireUniqueEmail = true;
+    // ==================== LOCKOUT POLICIES (Brute Force Protection) ====================
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);  // Lock for 15 minutes
+    options.Lockout.MaxFailedAccessAttempts = 5;       // Lock after 5 failed attempts
+    options.Lockout.AllowedForNewUsers = true;         // Apply to new users too
+
+    // ==================== USER SETTINGS ====================
+    options.User.RequireUniqueEmail = true;            // Each user must have unique email
+    options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";  // Allowed chars
 })
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
+// ==================== COOKIE & SESSION SECURITY ====================
 builder.Services.ConfigureApplicationCookie(options =>
 {
-    // Secure Cookie Configuration
+    // HttpOnly: Prevents JavaScript access to cookies (XSS protection)
     options.Cookie.HttpOnly = true;
-    options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // Requires HTTPS
-    options.Cookie.SameSite = SameSiteMode.Strict; // Mitigate CSRF
-    options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
-    options.SlidingExpiration = true;
 
-    options.LoginPath = "/Identity/Account/Login";
-    options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+    // SecurePolicy.Always: Cookie only sent over HTTPS
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+
+    // SameSite.Strict: Prevents CSRF attacks
+    options.Cookie.SameSite = SameSiteMode.Strict;
+
+    // Session timeout
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+    options.SlidingExpiration = true;  // Reset timeout on each request
+
+    // Custom login paths
+    options.LoginPath = "/Account/Login";
+    options.AccessDeniedPath = "/Account/AccessDenied";
 });
+
+// ==================== ADDITIONAL SECURITY HEADERS ====================
+builder.Services.AddAntiforgery(options =>
+{
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    options.FormFieldName = "__RequestVerificationToken";
+});
+
 builder.Services.AddControllersWithViews();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSignalR();
 
+// ==================== SESSION CONFIGURATION ====================
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    options.Cookie.SameSite = SameSiteMode.Strict;
+});
+
 var app = builder.Build();
 
+// ==================== DATABASE INITIALIZATION ====================
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
-    var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
+    var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
     var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
     await DbInitializer.Initialize(services, userManager, roleManager);
 }
 
-// Configure the HTTP request pipeline.
+// ==================== HTTP REQUEST PIPELINE ====================
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
@@ -68,15 +96,29 @@ if (app.Environment.IsDevelopment())
 else
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
+    app.UseHsts();  // HTTP Strict Transport Security
 }
 
-app.UseHttpsRedirection();
+app.UseHttpsRedirection();  // Force HTTPS
 app.UseRouting();
 
+app.UseSession();  // Enable sessions
 app.UseAuthentication();
 app.UseAuthorization();
+
+// Redirect Identity area pages to custom MVC AccountController views so scaffolded Identity pages are not shown
+app.MapGet("/Identity/Account/Register", () => Results.Redirect("/Account/Register"));
+app.MapGet("/Identity/Account/Login", () => Results.Redirect("/Account/Login"));
+
+// ==================== SECURITY HEADERS MIDDLEWARE ====================
+app.Use(async (context, next) =>
+{
+    context.Response.Headers["X-Content-Type-Options"] = "nosniff";
+    context.Response.Headers["X-Frame-Options"] = "DENY";
+    context.Response.Headers["X-XSS-Protection"] = "1; mode=block";
+    context.Response.Headers["Referrer-Policy"] = "strict-origin-when-cross-origin";
+    await next();
+});
 
 app.MapStaticAssets();
 
@@ -91,3 +133,4 @@ app.MapRazorPages()
 app.MapHub<AppointmentHub>("/appointmentHub");
 
 app.Run();
+
