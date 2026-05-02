@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ClinicAppointmentSystem.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260502065958_PendingModelChanges")]
-    partial class PendingModelChanges
+    [Migration("20260502074042_Initial_Production_Final")]
+    partial class Initial_Production_Final
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

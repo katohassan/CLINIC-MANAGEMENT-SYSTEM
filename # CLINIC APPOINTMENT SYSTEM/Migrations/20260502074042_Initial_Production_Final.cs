@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ClinicAppointmentSystem.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class Initial_Production_Final : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -30,6 +30,11 @@ namespace ClinicAppointmentSystem.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "TEXT", nullable: false),
+                    FullName = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
+                    IsApproved = table.Column<bool>(type: "INTEGER", nullable: false),
+                    RoleRequested = table.Column<string>(type: "TEXT", nullable: false),
+                    RecoveryEmail = table.Column<string>(type: "TEXT", nullable: true),
+                    Bio = table.Column<string>(type: "TEXT", nullable: true),
                     UserName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
@@ -91,10 +96,16 @@ namespace ClinicAppointmentSystem.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
+                    DoctorId = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
                     UserId = table.Column<string>(type: "TEXT", nullable: true),
-                    Name = table.Column<string>(type: "TEXT", nullable: false),
-                    Specialty = table.Column<string>(type: "TEXT", nullable: false),
-                    Contact = table.Column<string>(type: "TEXT", nullable: false)
+                    FirstName = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
+                    MiddleName = table.Column<string>(type: "TEXT", maxLength: 100, nullable: true),
+                    LastName = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
+                    Specialty = table.Column<string>(type: "TEXT", maxLength: 200, nullable: false),
+                    Qualifications = table.Column<string>(type: "TEXT", maxLength: 500, nullable: true),
+                    Department = table.Column<string>(type: "TEXT", maxLength: 100, nullable: true),
+                    Contact = table.Column<string>(type: "TEXT", nullable: true),
+                    ConsultationHours = table.Column<string>(type: "TEXT", maxLength: 500, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -102,21 +113,42 @@ namespace ClinicAppointmentSystem.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Patients",
+                name: "EmergencyContacts",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    UserId = table.Column<string>(type: "TEXT", nullable: true),
-                    Name = table.Column<string>(type: "TEXT", nullable: false),
-                    DOB = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    Contact = table.Column<string>(type: "TEXT", nullable: false),
-                    Address = table.Column<string>(type: "TEXT", nullable: true),
-                    MedicalHistory = table.Column<string>(type: "TEXT", nullable: true)
+                    Name = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
+                    Relationship = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
+                    Phone = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Patients", x => x.Id);
+                    table.PrimaryKey("PK_EmergencyContacts", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Staff",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    StaffId = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
+                    FirstName = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
+                    MiddleName = table.Column<string>(type: "TEXT", maxLength: 100, nullable: true),
+                    LastName = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
+                    Role = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
+                    Department = table.Column<string>(type: "TEXT", maxLength: 100, nullable: true),
+                    Phone = table.Column<string>(type: "TEXT", nullable: true),
+                    Email = table.Column<string>(type: "TEXT", nullable: true),
+                    EmploymentDate = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    ShiftSchedule = table.Column<string>(type: "TEXT", maxLength: 200, nullable: true),
+                    AccessLevel = table.Column<string>(type: "TEXT", maxLength: 200, nullable: true),
+                    UserId = table.Column<string>(type: "TEXT", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Staff", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -248,6 +280,76 @@ namespace ClinicAppointmentSystem.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Patients",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    UserId = table.Column<string>(type: "TEXT", nullable: true),
+                    FirstName = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
+                    MiddleName = table.Column<string>(type: "TEXT", maxLength: 50, nullable: true),
+                    LastName = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
+                    DateOfBirth = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    Gender = table.Column<int>(type: "INTEGER", nullable: false),
+                    NationalId = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
+                    Address = table.Column<string>(type: "TEXT", maxLength: 200, nullable: false),
+                    PrimaryPhone = table.Column<string>(type: "TEXT", nullable: false),
+                    SecondaryPhone = table.Column<string>(type: "TEXT", nullable: true),
+                    Email = table.Column<string>(type: "TEXT", nullable: false),
+                    EmergencyContactId = table.Column<int>(type: "INTEGER", nullable: true),
+                    Allergies = table.Column<string>(type: "TEXT", nullable: true),
+                    ChronicConditions = table.Column<string>(type: "TEXT", nullable: true),
+                    Surgeries = table.Column<string>(type: "TEXT", nullable: true),
+                    CurrentMedications = table.Column<string>(type: "TEXT", nullable: true),
+                    InsuranceProvider = table.Column<string>(type: "TEXT", nullable: true),
+                    PolicyNumber = table.Column<string>(type: "TEXT", nullable: true),
+                    PreferredDoctorId = table.Column<int>(type: "INTEGER", nullable: true),
+                    ReasonForVisit = table.Column<string>(type: "TEXT", maxLength: 500, nullable: true),
+                    ConsentDataPrivacy = table.Column<bool>(type: "INTEGER", nullable: false),
+                    ConsentTreatment = table.Column<bool>(type: "INTEGER", nullable: false),
+                    ConsentBilling = table.Column<bool>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Patients", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Patients_Doctors_PreferredDoctorId",
+                        column: x => x.PreferredDoctorId,
+                        principalTable: "Doctors",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
+                        name: "FK_Patients_EmergencyContacts_EmergencyContactId",
+                        column: x => x.EmergencyContactId,
+                        principalTable: "EmergencyContacts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AppointmentPreferences",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    PreferredDate = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    PreferredTime = table.Column<TimeSpan>(type: "TEXT", nullable: true),
+                    Type = table.Column<string>(type: "TEXT", maxLength: 100, nullable: true),
+                    Location = table.Column<string>(type: "TEXT", maxLength: 200, nullable: true),
+                    PatientId = table.Column<int>(type: "INTEGER", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AppointmentPreferences", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AppointmentPreferences_Patients_PatientId",
+                        column: x => x.PatientId,
+                        principalTable: "Patients",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Appointments",
                 columns: table => new
                 {
@@ -330,6 +432,11 @@ namespace ClinicAppointmentSystem.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_AppointmentPreferences_PatientId",
+                table: "AppointmentPreferences",
+                column: "PatientId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Appointments_DoctorId",
                 table: "Appointments",
                 column: "DoctorId");
@@ -387,6 +494,17 @@ namespace ClinicAppointmentSystem.Migrations
                 column: "DoctorId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Patients_EmergencyContactId",
+                table: "Patients",
+                column: "EmergencyContactId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Patients_PreferredDoctorId",
+                table: "Patients",
+                column: "PreferredDoctorId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Records_DoctorId",
                 table: "Records",
                 column: "DoctorId");
@@ -400,6 +518,9 @@ namespace ClinicAppointmentSystem.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "AppointmentPreferences");
+
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
@@ -431,6 +552,9 @@ namespace ClinicAppointmentSystem.Migrations
                 name: "Records");
 
             migrationBuilder.DropTable(
+                name: "Staff");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
@@ -440,10 +564,13 @@ namespace ClinicAppointmentSystem.Migrations
                 name: "Appointments");
 
             migrationBuilder.DropTable(
+                name: "Patients");
+
+            migrationBuilder.DropTable(
                 name: "Doctors");
 
             migrationBuilder.DropTable(
-                name: "Patients");
+                name: "EmergencyContacts");
         }
     }
 }
